@@ -1,0 +1,1223 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación Integral: Funciones Algebraicas, Exponenciales y Logarítmicas</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true
+        },
+        svg: {
+          fontCache: 'global'
+        },
+        chtml: {
+          displayAlign: 'left'
+        }
+      };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #4f46e5; --primary-dark: #4338ca; --primary-light: #eef2ff;
+            --secondary-color: #64748b; --success-color: #10b981; --success-light: #ecfdf5;
+            --danger-color: #ef4444; --danger-light: #fef2f2; --warning-color: #f59e0b;
+            --light-bg: #f1f5f9; --border-color: #cbd5e1; --text-color: #1e293b;
+            --white: #ffffff; --progress-color-start: #4f46e5; --progress-color-end: #10b981;
+        }
+        @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        body {
+            font-family: 'Inter', sans-serif; display: flex; justify-content: center;
+            align-items: flex-start; min-height: 100vh;
+            background: linear-gradient(-45deg, #6d28d9, #4f46e5, #d946ef, #10b981);
+            background-size: 400% 400%; animation: moveGradient 20s ease infinite;
+            margin: 0; padding: 2em 1em;
+        }
+        .main-wrapper { width: 100%; max-width: 900px; position: relative; }
+        .card { background: var(--white); padding: 2.5em; border-radius: 16px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15); animation: fadeIn 0.5s ease-out; }
+        .hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDownFade { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        #category-selection-screen h2 { font-size: 2em; color: var(--primary-color); text-align: center; margin-top: 0; margin-bottom: 0.5em; }
+        #category-selection-screen .subtitle { text-align: center; color: var(--secondary-color); margin-bottom: 2em; font-size: 1.1em; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+        #category-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5em; margin-bottom: 2.5em; }
+        .category-item { background-color: var(--white); border: 2px solid var(--border-color); border-radius: 12px; padding: 1.5em; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .category-item:hover:not(.completed) { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(79,70,229,0.1); border-color: var(--primary-color); }
+        .category-item h3 { margin: 0 0 0.5em 0; color: var(--primary-dark); font-size: 1.25em; }
+        .category-item p { margin: 0; color: var(--secondary-color); font-size: 0.95em; line-height: 1.5; }
+        .category-item.completed { border-color: var(--success-color); background-color: var(--success-light); cursor: default; }
+        .category-item.completed:hover { transform: none; box-shadow: none; }
+        .category-item.completed::before { content: '✔'; font-weight: bold; position: absolute; top: 1em; right: 1.2em; color: var(--success-color); font-size: 1.5em; }
+        .category-item .progress-info { margin-top: 1em; font-weight: bold; color: var(--success-color); }
+        #overall-progress-container { margin-top: 2em; text-align: center; border-top: 1px solid var(--border-color); padding-top: 2em;}
+        #overall-progress-container h3 { margin: 0 0 0.5em 0; color: var(--text-color); }
+        #overall-score { font-size: 1.2em; color: var(--secondary-color); }
+        #show-final-results-btn { padding: 12px 30px; font-size: 1em; font-weight: bold; color: var(--white); background-color: var(--success-color); border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; margin-top: 1em; }
+        #show-final-results-btn:hover { background-color: #059669; }
+
+        /* --- New Summary Card Styles --- */
+        #summary-container h2 { font-size: 1.8em; margin-top: 0; margin-bottom: 0.2em; color: var(--primary-color); }
+        #summary-container .subtitle { color: var(--secondary-color); margin-top: 0; margin-bottom: 2em; }
+        .summary-section { margin-bottom: 2.5em; }
+        .summary-section h3 { font-size: 1.2em; font-weight: 700; color: var(--text-color); margin-bottom: 1em; padding-bottom: 0.5em; border-bottom: 2px solid var(--primary-light); display: flex; align-items: center; gap: 0.75em; }
+        .summary-key-concepts { line-height: 1.7; color: #374151; }
+        .summary-key-concepts p, .summary-key-concepts ul, .summary-key-concepts ol { margin-bottom: 1em; }
+        .summary-key-concepts ul, .summary-key-concepts ol { padding-left: 20px; }
+        .summary-key-concepts strong { color: var(--primary-dark); }
+        .summary-key-concepts mjx-container[display="true"] { background-color: rgba(79, 70, 229, 0.05); padding: 1em; border-radius: 8px; margin: 1em 0; }
+        .summary-tips-list { list-style: none; padding: 0; }
+        .summary-tips-list li { display: flex; align-items: flex-start; gap: 1em; margin-bottom: 1em; background-color: var(--primary-light); padding: 1em; border-radius: 8px; }
+        .summary-tips-list li::before { content: '💡'; font-size: 1.2em; line-height: 1.5; }
+        #summary-continue-btn { padding: 12px 30px; font-size: 1em; font-weight: bold; color: var(--white); background-color: var(--primary-color); border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s; display: block; width: 100%; }
+        #summary-continue-btn:hover { background-color: var(--primary-dark); transform: scale(1.02); }
+
+        /* --- Main Quiz & Final Screen Styles --- */
+        #quiz-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5em; }
+        #problem-header { color: var(--text-color); font-weight: 600; font-size: 1.1em; }
+        #score-counter { color: var(--success-color); font-weight: 600; font-size: 1em; background-color: var(--success-light); padding: 5px 10px; border-radius: 8px; }
+        #progress-container { width: 100%; background-color: #e2e8f0; border-radius: 10px; margin-bottom: 1.5em; height: 12px; overflow: hidden; }
+        #progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--progress-color-start), var(--progress-color-end)); border-radius: 10px; transition: width 0.6s cubic-bezier(0.4, 0.0, 0.2, 1); }
+        #question-container { font-size: 1.15em; line-height: 1.7; margin: 1em 0; color: var(--text-color); text-align: justify; }
+        #question-container table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+        #question-container th, #question-container td { border: 1px solid var(--border-color); padding: 12px; text-align: center; }
+        #question-container th { background-color: var(--light-bg); font-weight: 600; }
+        #graph-container, .option-graph-canvas-container { width: 100%; max-width: 450px; margin: 1.5em auto; border-radius: 8px; overflow: hidden; }
+        #graph-container svg, .option-graph-canvas-container svg {max-width: 100%; height: auto; display: block; margin: 0 auto; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);}
+        #options-container { margin-top: 1.5em; display: flex; flex-direction: column; gap: 0.75em; }
+        .option-button { display: flex; align-items: center; gap: 1em; width: 100%; padding: 14px 18px; font-size: 1.05em; text-align: left; background-color: var(--white); border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: all 0.2s ease-in-out; }
+        .option-button:hover:not(.disabled) { border-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .option-button .label { font-weight: bold; color: var(--primary-color); }
+        .option-button .value { flex-grow: 1; }
+        .option-button.correct { border-color: var(--success-color); background-color: var(--success-light); }
+        .option-button.correct .label { color: var(--success-color); }
+        .option-button.incorrect { border-color: var(--danger-color); background-color: var(--danger-light); }
+        .option-button.incorrect .label { color: var(--danger-color); }
+        .option-button.disabled { cursor: not-allowed; }
+        .options-grid-with-graphs { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+        .option-block-graph { padding: 1em; border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: all 0.2s ease-in-out; background-color: var(--white); }
+        .option-block-graph:hover:not(.disabled) { border-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .option-block-graph.correct { border-color: var(--success-color)!important; background-color: var(--success-light); }
+        .option-block-graph.incorrect { border-color: var(--danger-color)!important; background-color: var(--danger-light); }
+        .option-block-graph .label { font-size: 1.2em; font-weight: bold; margin-bottom: 0.5em; color: var(--primary-color); }
+        #feedback-container { margin-top: 1.5em; padding: 1.2em; border-radius: 12px; display: none; animation: slideDownFade 0.4s ease-out; line-height: 1.7; text-align: justify; }
+        #feedback-container.correct { background-color: var(--success-light); border-left: 5px solid var(--success-color); }
+        #feedback-container.incorrect { background-color: var(--danger-light); border-left: 5px solid var(--danger-color); }
+        #feedback-title { display: flex; align-items: center; font-size: 1.2em; font-weight: 700; margin-bottom: 0.5em; }
+        #feedback-title svg { width: 24px; height: 24px; margin-right: 8px; }
+        #feedback-container.correct #feedback-title { color: var(--success-color); }
+        #feedback-container.incorrect #feedback-title { color: var(--danger-color); }
+        #navigation-container { display: flex; justify-content: flex-end; margin-top: 2em; }
+        #next-button, .nav-btn { padding: 12px 30px; font-size: 1em; font-weight: bold; color: var(--white); background-color: var(--primary-color); border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        #next-button { visibility: hidden; opacity: 0; }
+        #next-button.visible { visibility: visible; opacity: 1; }
+        #next-button:hover, .nav-btn:hover { background-color: var(--primary-dark); }
+        #final-screen { text-align: center; animation: fadeIn 0.5s ease-out; }
+        #final-screen h2 { font-size: 2.2em; color: var(--primary-color); font-weight: 700; }
+        #final-screen p { font-size: 1.2em; }
+        .highlight { color: var(--primary-color); font-weight: 700; }
+        @media (max-width: 680px) { .options-grid-with-graphs { grid-template-columns: 1fr; } #category-list { grid-template-columns: 1fr; }}
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div id="category-selection-screen" class="card">
+            <h2>Evaluación Integral: Funciones Algebraicas, Exponenciales y Logarítmicas</h2>
+            <p class="subtitle">Selecciona un tema para comenzar. Cada sección se enfoca en una habilidad clave. ¡Completa todas las secciones para demostrar tu maestría!</p>
+            <ul id="category-list"></ul>
+            <div id="overall-progress-container" class="hidden">
+                <h3>Progreso General</h3>
+                <p id="overall-score"></p>
+                <button id="show-final-results-btn" class="nav-btn hidden">Ver Resumen Final</button>
+            </div>
+        </div>
+
+        <div id="quiz-wrapper" class="hidden">
+            <div id="summary-container" class="card hidden">
+                <h2 id="summary-title"></h2>
+                <p class="subtitle">Prepárate para la siguiente sección.</p>
+
+                <div class="summary-section">
+                    <h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book-open" style="color: var(--primary-dark);"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                      Conceptos Clave y Fórmulas
+                    </h3>
+                    <div id="summary-key-concepts" class="summary-key-concepts"></div>
+                </div>
+                
+                <div class="summary-section">
+                    <h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap" style="color: var(--warning-color);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                      Consejos para esta Sección
+                    </h3>
+                    <ul id="summary-tips-list" class="summary-tips-list"></ul>
+                </div>
+                
+                <button id="summary-continue-btn">Comenzar Problemas</button>
+            </div>
+
+            <div id="quiz-container" class="hidden card">
+                <div id="progress-container"><div id="progress-bar"></div></div>
+                <div id="quiz-header-bar">
+                    <div id="problem-header"></div>
+                    <div id="score-counter"></div>
+                </div>
+                <div id="question-container"></div>
+                <div id="graph-container"></div>
+                <div id="options-container"></div>
+                <div id="feedback-container"></div>
+                <div id="navigation-container"><button id="next-button">Siguiente →</button></div>
+            </div>
+
+            <div id="final-screen" class="hidden card">
+                <h2 id="final-title"></h2>
+                <p id="final-message"></p>
+                <p id="final-score" style="font-size: 2.5em; font-weight: bold; margin: 0.5em 0;"></p>
+                <p id="final-percentage" style="font-size: 1.5em;"></p>
+                <button id="back-to-menu-btn" class="nav-btn">Volver al Menú</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function renderMath() {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        setTimeout(() => window.MathJax.typesetPromise(), 0);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const icons = {
+            check: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>`,
+            x: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
+        };
+        const summaries = {
+  "ai-cat-1756260612611-0": {
+    "title": "Conceptos Fundamentales de Funciones Algebraicas",
+    "key_concepts_html": "<p>Esta sección evalúa tu comprensión de las propiedades básicas de las funciones algebraicas y su representación gráfica. Es crucial recordar las definiciones de funciones crecientes y decrecientes, y cómo identificar diferentes tipos de funciones a partir de sus ecuaciones o gráficos.</p><p><strong>Conceptos clave incluyen:</strong></p><ul><li><strong>Evaluación de funciones:</strong> Sustituir un valor en la variable independiente para encontrar el valor de la función.</li><li><strong>Puntos de intersección:</strong> Los puntos donde la gráfica de una función corta los ejes coordenados (intersecciones con el eje X e Y).</li><li><strong>Funciones crecientes y decrecientes:</strong> Una función \\(f(x)\\) es creciente si \\(x_1 < x_2 \\Rightarrow f(x_1) < f(x_2)\\) y decreciente si \\(x_1 < x_2 \\Rightarrow f(x_1) > f(x_2)\\).</li><li><strong>Comparación de funciones:</strong> Determinar cuándo una función tiene valores mayores o menores que otra en un intervalo dado o en puntos específicos.</li></ul><p>Recuerda que una función cuadrática tiene la forma general \\(f(x) = ax^2 + bx + c\\) y su gráfica es una parábola. Una función lineal simple es \\(f(x) = mx\\).</p>",
+    "tips": [
+      "Presta atención a los detalles en los enunciados y diagramas.",
+      "Recuerda revisar las fórmulas y conceptos clave relacionados antes de empezar.",
+      "Usa la explicación para entender tus errores y reforzar tu aprendizaje.",
+      "¡Mucha suerte en esta sección!"
+    ]
+  },
+  "ai-cat-1756260612611-1": {
+    "title": "Funciones Potencia: Propiedades, Análisis y Aplicaciones",
+    "key_concepts_html": "<p>Esta categoría profundiza en las <strong>funciones potencia</strong>, que tienen la forma general \\(f(x) = ax^n\\), donde \\(a\\) es una constante real y \\(n\\) es un entero. Comprender cómo los valores de \\(a\\) y \\(n\\) afectan el comportamiento de la función es fundamental.</p><strong>Fórmulas y Conceptos Clave:</strong><ul><li><strong>Forma general:</strong> \\(f(x) = ax^n\\)</li><li>Un <strong>punto fijo</strong> de una función \\(f\\) es un valor \\(x\\) tal que \\(f(x) = x\\).</li><li>Para determinar el comportamiento (creciente/decreciente) de \\(f(x) = bx^m\\), considera el signo de \\(b\\) y la paridad/imparidad de \\(m\\), especialmente para \\(x > 0\\).</li><li>Para encontrar los parámetros \\(a\\) y \\(n\\) de una función potencia, a menudo se necesitan dos puntos de la función, generando un sistema de ecuaciones. Por ejemplo, si \\(f(x) = ax^n\\), entonces \\(f(x_1) = ax_1^n\\) y \\(f(x_2) = ax_2^n\\).</li></ul><p>Las aplicaciones de las funciones potencia pueden modelar diversas situaciones, como el movimiento o el crecimiento.</p>",
+    "tips": [
+      "Presta atención a los detalles en los enunciados y diagramas.",
+      "Recuerda revisar las fórmulas y conceptos clave relacionados antes de empezar.",
+      "Usa la explicación para entender tus errores y reforzar tu aprendizaje.",
+      "¡Mucha suerte en esta sección!"
+    ]
+  },
+  "ai-cat-1756260612611-2": {
+    "title": "Explorando las Funciones Exponenciales",
+    "key_concepts_html": "<p>Las <strong>funciones exponenciales</strong> son cruciales en matemáticas y tienen la forma general \\(f(x) = a^x\\) o transformaciones de esta. Se caracterizan por tener la variable independiente en el exponente.</p><strong>Propiedades Fundamentales:</strong><ul><li>Para que \\(f(x) = a^x\\) sea una función exponencial, la base \\(a\\) debe ser un número real positivo y \\(a \\neq 1\\).</li><li>El dominio de una función exponencial simple es \\(\\mathbb{R}\\).</li><li>El recorrido (rango) de \\(f(x) = a^x\\) es \\((0, \\infty)\\).</li><li>La gráfica de \\(f(x) = a^x\\) siempre interseca el eje Y en \\((0, 1)\\). No hay intersección con el eje X.</li><li>Si \\(a > 1\\), la función es <strong>creciente</strong>. Si \\(0 < a < 1\\), la función es <strong>decreciente</strong>.</li></ul><p>Las transformaciones como \\(f(x) = a^{x+c} + b\\) desplazan la gráfica horizontalmente (por \\(c\\)) y verticalmente (por \\(b\\)), afectando el recorrido y los interceptos.</p>\\[\\text{Intercepto Y: } f(0) = a^{0+c} + b = a^c + b\\]\\[\\text{Intercepto X (si existe): } a^{x+c} + b = 0 \\implies a^{x+c} = -b\\]",
+    "tips": [
+      "Presta atención a los detalles en los enunciados y diagramas.",
+      "Recuerda revisar las fórmulas y conceptos clave relacionados antes de empezar.",
+      "Usa la explicación para entender tus errores y reforzar tu aprendizaje.",
+      "¡Mucha suerte en esta sección!"
+    ]
+  },
+  "ai-cat-1756260612611-3": {
+    "title": "Dominio e Interceptos de Funciones Logarítmicas",
+    "key_concepts_html": "<p>Las <strong>funciones logarítmicas</strong> son las inversas de las funciones exponenciales. La forma general es \\(f(x) = \\log_b(x)\\), donde \\(b\\) es la base. La relación inversa es crucial: si \\(y = \\log_b(x)\\), entonces \\(b^y = x\\).</p><strong>Aspectos Críticos:</strong><ul><li><strong>Dominio:</strong> El argumento del logaritmo debe ser siempre <strong>positivo</strong>. Para \\(f(x) = \\log_b(g(x))\\), el dominio se define por la condición \\(g(x) > 0\\).</li><li><strong>Base del logaritmo:</strong> La base \\(b\\) debe ser positiva y \\(b \\neq 1\\).</li><li><strong>Intercepto Y:</strong> Se encuentra calculando \\(f(0)\\). Sin embargo, muchas funciones logarítmicas no intersecan el eje Y si \\(x=0\\) no está en su dominio.</li><li><strong>Intercepto X:</strong> Se encuentra resolviendo \\(f(x) = 0\\), lo que implica \\(\\log_b(g(x)) = 0\\). Por la definición de logaritmo, esto significa que \\(g(x) = b^0 = 1\\).</li></ul><p>Recordar estas propiedades te ayudará a analizar y resolver problemas con funciones logarítmicas eficazmente.</p>",
+    "tips": [
+      "Presta atención a los detalles en los enunciados y diagramas.",
+      "Recuerda revisar las fórmulas y conceptos clave relacionados antes de empezar.",
+      "Usa la explicación para entender tus errores y reforzar tu aprendizaje.",
+      "¡Mucha suerte en esta sección!"
+    ]
+  }
+};
+        const allProblemsData = [
+  {
+    "text": "Dadas las funciones \\(f(x) = 3x\\) y \\(g(x) = 5x^2\\), ¿cuál de los siguientes valores de \\(x\\) cumple la condición \\(f(x) = g(x)\\)?",
+    "options": [
+      {
+        "text": "\\(\\frac{5}{3}\\)"
+      },
+      {
+        "text": "\\(1\\)"
+      },
+      {
+        "text": "\\(1,5\\)"
+      },
+      {
+        "text": "\\(\\frac{3}{5}\\)"
+      },
+      {
+        "text": "\\(\\pi\\)"
+      }
+    ],
+    "correct": 3,
+    "explanation": "<ol><li>Para encontrar el valor de \\(x\\) que cumple la condición \\(f(x) = g(x)\\), igualamos las dos funciones: \\(3x = 5x^2\\).</li><li>Reorganizamos la ecuación para llevarla a la forma estándar de una ecuación cuadrática: \\(5x^2 - 3x = 0\\).</li><li>Factorizamos \\(x\\) de la ecuación: \\(x(5x - 3) = 0\\).</li><li>Esto nos da dos posibles soluciones: \\(x = 0\\) o \\(5x - 3 = 0\\).</li><li>Resolviendo la segunda parte, tenemos \\(5x = 3\\), lo que implica \\(x = \\frac{3}{5}\\).</li><li>De las opciones dadas, \\(\\frac{3}{5}\\) es la única que coincide con una de las soluciones encontradas.</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "originalQuestionNumber": "2",
+    "internalId": "q-1756258310978-0.732473231766192",
+    "id": "q-ai-cat-1756260612611-0-0"
+  },
+  {
+    "text": "¿Cuál de las siguientes funciones es decreciente?",
+    "options": [
+      {
+        "text": "\n                  \\(f(x) = x^5 - \\frac{3}{2}x^5\\)\n                  "
+      },
+      {
+        "text": "\n                  \\(g(x) = x\\)\n                  "
+      },
+      {
+        "text": "\n                  \\(h(x) = -x^2\\)\n                  "
+      },
+      {
+        "text": "\n                  \\(j(x) = 3x^4\\)\n                  "
+      }
+    ],
+    "correct": 0,
+    "explanation": "<ol><li>Simplificamos la función \n                  \\(f(x) = x^5 - \\frac{3}{2}x^5 = \\left(1 - \\frac{3}{2}\\right)x^5 = -\\frac{1}{2}x^5\\)\n                  .</li><li>Para determinar si una función es decreciente, examinamos el signo de su primera derivada. Calculamos la derivada de \n                  \\(f(x)\\)\n                  : \n                  \\[f'(x) = \\frac{d}{dx}\\left(-\\frac{1}{2}x^5\\right) = -\\frac{1}{2} \\cdot 5x^4 = -\\frac{5}{2}x^4\\]\n                  </li><li>Dado que \n                  \\(x^4 \\geq 0\\)\n                   para todos los valores reales de \n                  \\(x\\)\n                  , y el coeficiente \n                  \\(-\\frac{5}{2}\\)\n                   es negativo, el producto \n                  \\(-\\frac{5}{2}x^4\\)\n                   siempre será menor o igual que cero (\n                  \\(f'(x) \\leq 0\\)\n                  ) para todos los \n                  \\(x \\in \\mathbb{R}\\)\n                  .</li><li>Una función es decreciente si su primera derivada es menor o igual que cero en su dominio. Por lo tanto, \n                  \\(f(x)\\)\n                   es decreciente.</li><li>Para las otras opciones: \n                  \\(g(x) = x\\)\n                  , \n                  \\(g'(x) = 1 > 0\\)\n                  , es creciente. \n                  \\(h(x) = -x^2\\)\n                  , \n                  \\(h'(x) = -2x\\)\n                  . Es creciente para \n                  \\(x < 0\\)\n                   y decreciente para \n                  \\(x > 0\\)\n                  . \n                  \\(j(x) = 3x^4\\)\n                  , \n                  \\(j'(x) = 12x^3\\)\n                  . Es decreciente para \n                  \\(x < 0\\)\n                   y creciente para \n                  \\(x > 0\\)\n                  .</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "originalQuestionNumber": "12",
+    "internalId": "q-1756258305034-0.5268072269452624",
+    "id": "q-ai-cat-1756260612611-0-1"
+  },
+  {
+    "text": "¿Cuál de los siguientes pares de funciones representa de mejor manera el gráfico de la figura adjunta?",
+    "options": [
+      {
+        "text": "\\(f(x) = x^2\\) y \\(g(x) = x^4\\)"
+      },
+      {
+        "text": "\\(f(x) = x^4\\) y \\(g(x) = x^3\\)"
+      },
+      {
+        "text": "\\(f(x) = 4x^5\\) y \\(g(x) = 3x\\)"
+      },
+      {
+        "text": "\\(f(x) = -x^7\\) y \\(g(x) = x^6\\)"
+      }
+    ],
+    "correct": 3,
+    "explanation": "<ol><li>Analicemos las curvas en el gráfico. La curva de color rojizo/púrpura es una parábola que abre hacia arriba, pasa por el origen \\((0,0)\\), y por los puntos \\((1,1)\\) y \\((-1,1)\\). Esta forma y los puntos característicos corresponden a la función \\(y = x^2\\).</li><li>La curva de color azul es también simétrica con respecto al eje \\(y\\), pero abre hacia abajo y pasa por el origen \\((0,0)\\). A simple vista, parece más ",
+    "sourceFileName": "quiz_page_1.png",
+    "diagram": {
+      "type": "svg",
+      "code": "<svg viewBox=\"0 0 300 250\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <marker id=\"arrowhead_black\" markerWidth=\"10\" markerHeight=\"7\" refX=\"0\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 10 3.5, 0 7\" fill=\"black\" /></marker>\n  </defs>\n  <rect x=\"30\" y=\"30\" width=\"240\" height=\"190\" fill=\"none\" stroke=\"lightgray\" stroke-width=\"1\" />\n  <line x1=\"30\" y1=\"156.665\" x2=\"270\" y2=\"156.665\" stroke=\"black\" stroke-width=\"1\" marker-end=\"url(#arrowhead_black)\" />\n  <foreignObject x=\"265\" y=\"160\" width=\"20\" height=\"20\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">x</div>\n  </foreignObject>\n  <line x1=\"150\" y1=\"30\" x2=\"150\" y2=\"220\" stroke=\"black\" stroke-width=\"1\" marker-end=\"url(#arrowhead_black)\" />\n  <foreignObject x=\"155\" y=\"20\" width=\"20\" height=\"20\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">y</div>\n  </foreignObject>\n  <line x1=\"30\" y1=\"30\" x2=\"270\" y2=\"30\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <line x1=\"30\" y1=\"93.33\" x2=\"270\" y2=\"93.33\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <line x1=\"30\" y1=\"156.665\" x2=\"270\" y2=\"156.665\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <line x1=\"30\" y1=\"220\" x2=\"270\" y2=\"220\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <line x1=\"30\" y1=\"30\" x2=\"30\" y2=\"220\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <line x1=\"90\" y1=\"30\" x2=\"90\" y2=\"220\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <line x1=\"150\" y1=\"30\" x2=\"150\" y2=\"220\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <line x1=\"210\" y1=\"30\" x2=\"210\" y2=\"220\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <line x1=\"270\" y1=\"30\" x2=\"270\" y2=\"220\" stroke=\"lightgray\" stroke-width=\"1\" stroke-dasharray=\"2,2\" />\n  <foreignObject x=\"20\" y=\"150\" width=\"20\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">0</div>\n  </foreignObject>\n  <foreignObject x=\"145\" y=\"160\" width=\"20\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">0</div>\n  </foreignObject>\n  <foreignObject x=\"10\" y=\"25\" width=\"25\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">1.0</div>\n  </foreignObject>\n  <foreignObject x=\"10\" y=\"88\" width=\"25\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">0.5</div>\n  </foreignObject>\n  <foreignObject x=\"10\" y=\"215\" width=\"25\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">-0.5</div>\n  </foreignObject>\n  <foreignObject x=\"20\" y=\"160\" width=\"25\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">-1.0</div>\n  </foreignObject>\n  <foreignObject x=\"80\" y=\"160\" width=\"25\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">-0.5</div>\n  </foreignObject>\n  <foreignObject x=\"200\" y=\"160\" width=\"25\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">0.5</div>\n  </foreignObject>\n  <foreignObject x=\"260\" y=\"160\" width=\"25\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">1.0</div>\n  </foreignObject>\n  <path d=\"M 29.100173950195312,93.8872299194336 Q 149.1001739501953,220.5522299194336 269.1001739501953,93.8872299194336\" stroke=\"purple\" stroke-width=\"2\" fill=\"none\" />\n  <path d=\"M 152.56448364257812,157.8434295654297 Q 231.74864196777344,147.94540405273438 252.4445037841797,217.23155212402344\" stroke=\"blue\" stroke-width=\"2\" fill=\"none\" />\n  <path d=\"M 27.489498138427734,93.05638122558594 Q 40.98679733276367,161.4427032470703 149.96698760986328,157.94540405273438\" stroke=\"blue\" stroke-width=\"2\" fill=\"none\" />\n</svg>"
+    },
+    "originalQuestionNumber": "3",
+    "internalId": "q-1756258310978-0.07483394519776987",
+    "id": "q-ai-cat-1756260612611-0-2"
+  },
+  {
+    "text": "¿Cuál de las siguientes funciones corresponde a la gráfica de \\(f(x)\\) adjunta?",
+    "options": [
+      {
+        "text": "\\(f(x) = \\log_2(2x - 1)\\)"
+      },
+      {
+        "text": "\\(f(x) = \\log_3(3x - 1)\\)"
+      },
+      {
+        "text": "\\(f(x) = \\log_2(3x - 1)\\)"
+      },
+      {
+        "text": "\\(f(x) = \\log_2(2x - 2)\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "<ol><li>Para identificar la función correcta, debemos analizar las características clave de la gráfica, como su asíntota vertical y los puntos por los que pasa.</li><li><strong>Asíntota Vertical:</strong> En una función logarítmica \\(y = \\log_b(ax - c)\\), la asíntota vertical se encuentra donde el argumento del logaritmo es cero: \\(ax - c = 0\\). Observando la gráfica, la asíntota vertical está en \\(x = 0.5\\).</li><li><strong>Puntos Clave:</strong> La gráfica pasa por el punto \\((1, 0)\\), \\((1.5, 1)\\), \\((2.5, 2)\\), \\((4.5, 3)\\), entre otros.</li><li><strong>Evaluemos cada opción:</strong><ul><li><strong>A) \\(f(x) = \\log_2(2x - 1)\\)</strong><br/>   Asíntota: \\(2x - 1 = 0 \\Rightarrow 2x = 1 \\Rightarrow x = 0.5\\). Esto coincide con la gráfica. <br/>   Punto \\((1, 0)\\): \\(f(1) = \\log_2(2(1) - 1) = \\log_2(1) = 0\\). Esto coincide. <br/>   Punto \\((1.5, 1)\\): \\(f(1.5) = \\log_2(2(1.5) - 1) = \\log_2(3 - 1) = \\log_2(2) = 1\\). Esto coincide. <br/>   Punto \\((2.5, 2)\\): \\(f(2.5) = \\log_2(2(2.5) - 1) = \\log_2(5 - 1) = \\log_2(4) = 2\\). Esto coincide. <br/>   Esta función se ajusta a todos los puntos y la asíntota de la gráfica.</li><li><strong>B) \\(f(x) = \\log_3(3x - 1)\\)</strong><br/>   Asíntota: \\(3x - 1 = 0 \\Rightarrow x = 1/3 \\approx 0.33\\). No coincide con \\(x = 0.5\\).</li><li><strong>C) \\(f(x) = \\log_2(3x - 1)\\)</strong><br/>   Asíntota: \\(3x - 1 = 0 \\Rightarrow x = 1/3 \\approx 0.33\\). No coincide con \\(x = 0.5\\).</li><li><strong>D) \\(f(x) = \\log_2(2x - 2)\\)</strong><br/>   Asíntota: \\(2x - 2 = 0 \\Rightarrow 2x = 2 \\Rightarrow x = 1\\). No coincide con \\(x = 0.5\\).</li></ul></li><li>Basado en el análisis de la asíntota y los puntos por los que pasa la curva, la función \\(f(x) = \\log_2(2x - 1)\\) es la que mejor representa la gráfica adjunta.</li></ol>",
+    "sourceFileName": "image.png",
+    "diagram": {
+      "type": "svg",
+      "code": "<svg viewBox=\"0 0 500 300\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <marker id=\"arrowhead_black\" markerWidth=\"10\" markerHeight=\"7\" refX=\"0\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 10 3.5, 0 7\" fill=\"black\" /></marker>\n  </defs>\n  <rect x=\"20\" y=\"20\" width=\"460\" height=\"260\" fill=\"none\" stroke=\"#cccccc\" stroke-width=\"0.5\" />\n  <line x1=\"20\" y1=\"140\" x2=\"480\" y2=\"140\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#arrowhead_black)\" />\n  <foreignObject x=\"470\" y=\"145\" width=\"25\" height=\"15\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">X</div>\n  </foreignObject>\n  <line x1=\"160\" y1=\"280\" x2=\"160\" y2=\"20\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#arrowhead_black)\" />\n  <foreignObject x=\"165\" y=\"10\" width=\"20\" height=\"20\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 10px; font-family: Arial, sans-serif; color: black; height: 100%; display: flex; align-items: center; justify-content: center;\">Y</div>\n  </foreignObject>\n  <foreignObject x=\"185\" y=\"220\" width=\"40\" height=\"20\">\n    <div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size: 12px; font-family: Arial, sans-serif; color: rgb(0, 128, 128); height: 100%; display: flex; align-items: center; justify-content: center;\">f(x)</div>\n  </foreignObject>\n  <path d=\"M170,20 L170,280\" stroke=\"#888888\" stroke-dasharray=\"3,3\" stroke-width=\"1\" />\n  <path d=\"M 167.2915496826172,372.70550537109375 Q 150.7948455810547,-15.716841697692871 470.2309875488281,-45.710845947265625\" fill=\"none\" stroke=\"#1c71d8\" stroke-width=\"2\" />\n</svg>"
+    },
+    "originalQuestionNumber": "20",
+    "internalId": "q-1756258285939-0.407343091624093",
+    "id": "q-ai-cat-1756260612611-0-3"
+  },
+  {
+    "text": "Con respecto a las funciones \n                  \\(f(x) = 11x^2\\)\n                   y \n                  \\(g(x) = x^3\\)\n                   ¿Cuál de las siguientes afirmaciones es verdadera?",
+    "options": [
+      {
+        "text": "Ambas funciones toman el mismo valor si \n                  \\(x = 1\\)\n                  ."
+      },
+      {
+        "text": "\n                  \\(f(x) \\geq 0 \\, \\forall x \\in \\mathbb{R}\\)\n                  "
+      },
+      {
+        "text": "\n                  \\(f(x) \\geq g(x) \\, \\forall x \\in \\mathbb{R}\\)\n                  "
+      },
+      {
+        "text": "\n                  \\(f(x) \\leq g(x) \\, \\forall x \\in \\mathbb{R}\\)\n                  "
+      }
+    ],
+    "correct": 1,
+    "explanation": "<ol><li>Analizamos la función \n                  \\(f(x) = 11x^2\\)\n                  .</li><li>Observamos que la expresión \n                  \\(x^2\\)\n                   siempre es mayor o igual que cero para cualquier número real \n                  \\(x\\)\n                  .</li><li>Multiplicar \n                  \\(x^2\\)\n                   por el coeficiente positivo \n                  \\(11\\)\n                   mantiene la propiedad de que el resultado siempre será mayor o igual que cero.</li><li>Por lo tanto, \n                  \\(f(x) = 11x^2 \\geq 0\\)\n                   para todo \n                  \\(x \\in \\mathbb{R}\\)\n                  .</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "originalQuestionNumber": "11",
+    "internalId": "q-1756258305034-0.40239950104727107",
+    "id": "q-ai-cat-1756260612611-0-4"
+  },
+  {
+    "text": "Considerando las funciones \\(g(x) = 3x^4\\) y \\(h(x) = x^2\\), ¿cuál de las siguientes afirmaciones es verdadera?",
+    "options": [
+      {
+        "text": "Para todo \\(x \\in \\mathbb{R}\\), se cumple que \\(g(x) < h(x)\\)"
+      },
+      {
+        "text": "Si x = -3 entonces \\(g(x) = -27 \\cdot h(x)\\)"
+      },
+      {
+        "text": "Si \\(a = \\frac{1}{\\sqrt{3}}\\), entonces g(a) = h(a)."
+      },
+      {
+        "text": "Si x = 0 entonces \\(g(x) > h(x)\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "<ol><li>Analizamos cada opción.</li><li><b>Opción A:</b> Para todo \\(x \\in \\mathbb{R}\\), \\(g(x) < h(x)\\) o sea \\(3x^4 < x^2\\). Si \\(x=2\\), \\(3(2)^4 = 48\\) y \\((2)^2 = 4\\), entonces \\(48 < 4\\) es falso. Por lo tanto, esta afirmación es falsa.</li><li><b>Opción B:</b> Si \\(x = -3\\), entonces \\(g(-3) = 3(-3)^4 = 3(81) = 243\\) y \\(h(-3) = (-3)^2 = 9\\). La afirmación es \\(g(-3) = -27 \\cdot h(-3)\\), es decir, \\(243 = -27 \\cdot 9\\), lo que da \\(243 = -243\\). Esto es falso.</li><li><b>Opción C:</b> Si \\(a = \\frac{1}{\\sqrt{3}}\\), entonces \\(g(a) = 3\\left(\\frac{1}{\\sqrt{3}}\\right)^4 = 3\\left(\\frac{1}{9}\\right) = \\frac{1}{3}\\). Y \\(h(a) = \\left(\\frac{1}{\\sqrt{3}}\\right)^2 = \\frac{1}{3}\\). Como \\(g(a) = h(a) = \\frac{1}{3}\\), esta afirmación es verdadera.</li><li><b>Opción D:</b> Si \\(x = 0\\), entonces \\(g(0) = 3(0)^4 = 0\\) y \\(h(0) = (0)^2 = 0\\). La afirmación es \\(g(0) > h(0)\\), es decir, \\(0 > 0\\). Esto es falso.</li></ol>",
+    "sourceFileName": "quiz_page_image.png",
+    "originalQuestionNumber": "18",
+    "internalId": "q-1756258266448-0.4961137949711347",
+    "id": "q-ai-cat-1756260612611-0-5"
+  },
+  {
+    "text": "Considere la función \\(f(x) = 3x^4\\) y su respectivo gráfico junto a la función \\(g(x) = 4\\). ¿Cuál de las siguientes afirmaciones es verdadera?",
+    "options": [
+      {
+        "text": "Si \\(-1 \\le x \\le 1\\), entonces \\(f(x) \\le 4\\)"
+      },
+      {
+        "text": "La función \\(f(x)\\) es creciente"
+      },
+      {
+        "text": "La ecuación \\(f(x) = 0\\) tiene dos soluciones distintas"
+      },
+      {
+        "text": "\\(f(x) \\ge g(x)\\)"
+      }
+    ],
+    "correct": 0,
+    "explanation": "<ol><li>Para verificar la afirmación A), evaluamos la función \\(f(x) = 3x^4\\) en el intervalo dado \\([-1, 1]\\).</li><li>Calculamos \\(f(-1) = 3(-1)^4 = 3(1) = 3\\).</li><li>Calculamos \\(f(1) = 3(1)^4 = 3(1) = 3\\).</li><li>El valor mínimo de la función en este intervalo ocurre en \\(x=0\\), donde \\(f(0) = 3(0)^4 = 0\\).</li><li>Por lo tanto, para \\(-1 \\le x \\le 1\\), el rango de \\(f(x)\\) es \\([0, 3]\\).</li><li>Como \\(0 \\le f(x) \\le 3\\) para este intervalo, la afirmación \\(f(x) \\le 4\\) es verdadera.</li><li>Las otras opciones son falsas: \\(f(x)\\) no es siempre creciente (es decreciente para \\(x<0\\) y creciente para \\(x>0\\)), \\(f(x)=0\\) solo tiene una solución (\\(x=0\\)), y \\(f(x) \\ge g(x)\\) no es cierto para todos los valores de \\(x\\) (en el gráfico, \\(f(x) < g(x)\\) para \\(-1.07 < x < 1.07\\)).</li></ol>",
+    "sourceFileName": "image_1.png",
+    "diagram": {
+      "type": "svg",
+      "code": "<svg viewBox=\"0 0 250 150\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrowhead\" markerWidth=\"10\" markerHeight=\"7\" refX=\"10\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 10 3.5, 0 7\" fill=\"black\" /></marker></defs><line x1=\"40\" y1=\"120\" x2=\"40\" y2=\"10\" stroke=\"black\" stroke-width=\"1\" marker-end=\"url(#arrowhead)\" /><line x1=\"40\" y1=\"120\" x2=\"240\" y2=\"120\" stroke=\"black\" stroke-width=\"1\" marker-end=\"url(#arrowhead)\" /><line x1=\"37\" y1=\"120-2*11\" x2=\"40\" y2=\"120-2*11\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"18\" y=\"120-2*11-5\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">2</div></foreignObject><line x1=\"37\" y1=\"120-4*11\" x2=\"40\" y2=\"120-4*11\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"18\" y=\"120-4*11-5\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">4</div></foreignObject><line x1=\"37\" y1=\"120-6*11\" x2=\"40\" y2=\"120-6*11\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"18\" y=\"120-6*11-5\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">6</div></foreignObject><line x1=\"37\" y1=\"120-8*11\" x2=\"40\" y2=\"120-8*11\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"18\" y=\"120-8*11-5\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">8</div></foreignObject><line x1=\"37\" y1=\"120-10*11\" x2=\"40\" y2=\"120-10*11\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"18\" y=\"120-10*11-5\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">10</div></foreignObject><line x1=\"40+(-2+2)*50\" y1=\"117\" x2=\"40+(-2+2)*50\" y2=\"123\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"40+(-2+2)*50-10\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">-2</div></foreignObject><line x1=\"40+(-1+2)*50\" y1=\"117\" x2=\"40+(-1+2)*50\" y2=\"123\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"40+(-1+2)*50-10\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">-1</div></foreignObject><line x1=\"40+(0+2)*50\" y1=\"117\" x2=\"40+(0+2)*50\" y2=\"123\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"40+(1+2)*50\" y1=\"117\" x2=\"40+(1+2)*50\" y2=\"123\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"40+(1+2)*50-10\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">1</div></foreignObject><line x1=\"40+(2+2)*50\" y1=\"117\" x2=\"40+(2+2)*50\" y2=\"123\" stroke=\"black\" stroke-width=\"1\" /><foreignObject x=\"40+(2+2)*50-10\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">2</div></foreignObject><path d=\"M 72.5 10 L 90 87 L 102.5 109.56 L 115 117.9 L 127.5 119.87 L 140 120 L 152.5 119.87 L 165 117.9 L 177.5 109.56 L 190 87 L 207.5 10\" stroke=\"blue\" stroke-width=\"2\" fill=\"none\" /><foreignObject x=\"160\" y=\"45\" width=\"60\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">\\(3x^4\\)</div></foreignObject><line x1=\"40\" y1=\"76\" x2=\"240\" y2=\"76\" stroke=\"purple\" stroke-width=\"2\" /><foreignObject x=\"190\" y=\"70\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">4</div></foreignObject></svg>"
+    },
+    "originalQuestionNumber": "16",
+    "internalId": "q-1756258315536-0.8163603782897374",
+    "id": "q-ai-cat-1756260612611-0-6"
+  },
+  {
+    "text": "Jean y Diego compiten en un juego en el cual se tiene una función que modela el puntaje de cada jugador en el instante \text{x} (donde \text{x} = 0 determina el instante donde inicia el juego). Suponga que las funciones de los puntajes para Jean y Diego están dadas por \\(j(x) = x^4\\) y \\(d(x) = 100x\\) respectivamente. Considerando el gráfico adjunto de las funciones, ¿cuál de las siguientes afirmaciones es verdadera?",
+    "options": [
+      {
+        "text": "En un principio Jean tiene un mayor puntaje, pero luego Diego lo supera."
+      },
+      {
+        "text": "Si el juego termina antes de que \\(x = 5\\), entonces Diego tendrá más puntaje."
+      },
+      {
+        "text": "Si \\(x = 10\\) entonces Jean tendrá igual puntaje que Diego"
+      },
+      {
+        "text": "En el tiempo \\(x = 0\\) ambos jugadores tienen el mismo puntaje."
+      }
+    ],
+    "correct": 3,
+    "explanation": "<ol><li>Evaluamos las funciones de puntaje en \\(x=0\\) para determinar los puntajes iniciales: \\(j(0) = 0^4 = 0\\) y \\(d(0) = 100 \\times 0 = 0\\).</li><li>Ambas funciones tienen un valor de 0 en \\(x=0\\), lo que significa que en el instante inicial del juego, ambos jugadores tienen el mismo puntaje.</li><li>Las otras opciones se pueden verificar con el gráfico o evaluando las funciones en puntos específicos: por ejemplo, en \\(x=5\\), \\(j(5) = 5^4 = 625\\) y \\(d(5) = 100 \\times 5 = 500\\), por lo que Jean tiene más. En \\(x=10\\), \\(j(10) = 10^4 = 10000\\) y \\(d(10) = 100 \\times 10 = 1000\\), por lo que tampoco son iguales. El gráfico también muestra que Diego tiene un puntaje mayor que Jean en un inicio (después de \\(x=0\\) hasta aproximadamente \\(x=4.64\\)), y luego Jean supera a Diego.</li></ol>",
+    "sourceFileName": "image1.png",
+    "diagram": {
+      "type": "svg",
+      "code": "<svg viewBox=\"-20 -1100 240 2500\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <marker id=\"arrowhead_000000\" markerWidth=\"10\" markerHeight=\"7\" refX=\"0\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 10 3.5, 0 7\" fill=\"#000000\" /></marker>\n  </defs>\n  <line x1=\"-259.7626647949219\" y1=\"-124.12281036376953\" x2=\"519.1242065429688\" y2=\"-116.56080627441406\" fill=\"none\" stroke=\"#000000\" stroke-width=\"2\" marker-end=\"url(#arrowhead_000000)\" />\n  <line x1=\"148.5857696533203\" y1=\"151.89048767089844\" x2=\"152.3667755126953\" y2=\"-570.2813110351562\" fill=\"none\" stroke=\"#000000\" stroke-width=\"2\" marker-end=\"url(#arrowhead_000000)\" />\n  <line x1=\"-244.63865661621094\" y1=\"49.803382873535156\" x2=\"606.0872802734375\" y2=\"-316.95404052734375\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"2\" />\n  <path d=\"M -274.8866882324219,-464.4131774902344 Q -225.733642578125,-97.6557846069336 144.8047637939453,-120.34180450439453\" fill=\"none\" stroke=\"#000000\" stroke-width=\"2\" />\n  <path d=\"M 158.5857696533203,-117.90380859375 Q 492.65716552734375,-101.43678283691406 590.9632568359375,-468.1941833496094\" fill=\"none\" stroke=\"#000000\" stroke-width=\"2\" />\n</svg>"
+    },
+    "internalId": "q-1756259292861-0.008189086308293403",
+    "id": "q-ai-cat-1756260612611-0-7"
+  },
+  {
+    "text": "Sea \\(a \\in \\mathbb{R}\\) y \\(n \\in \\mathbb{Z}\\) y sea \\(f(x) = ax^n\\), ¿cuál de las siguientes afirmaciones es verdadera?",
+    "options": [
+      {
+        "text": "La ecuación \\(f(x) = 1\\) tiene al menos una solución real."
+      },
+      {
+        "text": "Si \\(a < 0\\) y \\(n\\) es impar mayor que \\(2\\), entonces la función \\(f(x)\\) es creciente."
+      },
+      {
+        "text": "Si \\(a \\geq 1\\) y \\(n = 1\\), entonces \\(f\\) es una función lineal."
+      },
+      {
+        "text": "Si \\(a < 0\\) y \\(n\\) es par positivo entonces la gráfica de la función \\(f(x)\\) se encuentra contenida en el I y II cuadrante."
+      }
+    ],
+    "correct": 2,
+    "explanation": "<ol><li>Analicemos cada opción:</li><li>**A) La ecuación \\(f(x) = 1\\) tiene al menos una solución real.** Si \\(a=0\\), entonces \\(f(x)=0\\), y \\(0=1\\) no tiene solución. Por lo tanto, esta afirmación es falsa.</li><li>**B) Si \\(a < 0\\) y \\(n\\) es impar mayor que \\(2\\), entonces la función \\(f(x)\\) es creciente.** Si \\(a < 0\\) y \\(n\\) es impar, por ejemplo, si \\(f(x) = -x^3\\), la función es decreciente en todo su dominio. Por ejemplo, \\(f'(x) = -3x^2\\), que es \\(\\leq 0\\) para todo \\(x\\). Por lo tanto, esta afirmación es falsa.</li><li>**C) Si \\(a \\geq 1\\) y \\(n = 1\\), entonces \\(f\\) es una función lineal.** Si \\(n=1\\), entonces \\(f(x) = ax^1 = ax\\). Una función de la forma \\(f(x) = mx\\) (donde \\(m\\) es una constante) es la definición de una función lineal que pasa por el origen. La condición \\(a \\geq 1\\) simplemente especifica que la pendiente es mayor o igual a 1, pero no cambia el hecho de que es una función lineal. Por lo tanto, esta afirmación es verdadera.</li><li>**D) Si \\(a < 0\\) y \\(n\\) es par positivo entonces la gráfica de la función \\(f(x)\\) se encuentra contenida en el I y II cuadrante.** Si \\(a < 0\\) y \\(n\\) es par positivo, por ejemplo, \\(f(x) = -x^2\\), la gráfica es una parábola que abre hacia abajo, lo que significa que \\(f(x) \\leq 0\\) para todos los \\(x\\). Por lo tanto, la gráfica se encuentra en el tercer y cuarto cuadrante (o en el segundo y tercer cuadrante para \\(x<0\\)). No puede estar en el I y II cuadrante donde \\(f(x)>0\\). Por lo tanto, esta afirmación es falsa.</li></ol>",
+    "sourceFileName": "image1.png",
+    "originalQuestionNumber": "22",
+    "internalId": "q-1756259292861-0.41289824906039785",
+    "id": "q-ai-cat-1756260612611-1-0"
+  },
+  {
+    "text": "Considerando las funciones \\(f(x) = 5x^3\\) y \\(g(x) = 2x^{-1}\\), entonces el valor de la expresión \\(f(1) \\cdot g\\left(\\frac{1}{4}\\right)\\) está dado por:",
+    "options": [
+      {
+        "text": "1"
+      },
+      {
+        "text": "40"
+      },
+      {
+        "text": "52"
+      },
+      {
+        "text": "25"
+      },
+      {
+        "text": "14"
+      }
+    ],
+    "correct": 1,
+    "explanation": "<ol><li>Primero, evaluamos la función \\(f(x)\\) en \\(x=1\\): \\(f(1) = 5(1)^3 = 5 \\cdot 1 = 5\\).</li><li>Luego, evaluamos la función \\(g(x)\\) en \\(x=\\frac{1}{4}\\). La función \\(g(x) = 2x^{-1}\\) se puede reescribir como \\(g(x) = \\frac{2}{x}\\).</li><li>Sustituimos \\(x=\\frac{1}{4}\\) en \\(g(x)\\): \\(g\\left(\\frac{1}{4}\\right) = \\frac{2}{\\frac{1}{4}} = 2 \\cdot 4 = 8\\).</li><li>Finalmente, multiplicamos los valores obtenidos: \\(f(1) \\cdot g\\left(\\frac{1}{4}\n\\right) = 5 \\cdot 8 = 40\\).</li></ol>",
+    "sourceFileName": "image_1.png",
+    "originalQuestionNumber": "17",
+    "internalId": "q-1756258315536-0.9959950924378804",
+    "id": "q-ai-cat-1756260612611-1-1"
+  },
+  {
+    "text": "Dada una función \\(f\\), decimos que \\(x \\in \\mathbb{R}\\) es un punto fijo de \\(f\\) si \\(f(x) = x\\). Para \\(f: \\mathbb{R} \\setminus \\{0\\} \\to \\mathbb{R}\\) dada por \\(f(x) = \\frac{3}{2}x^{-3}\\), ¿cuál de los siguientes valores es un punto fijo de la función?",
+    "options": [
+      {
+        "text": "\\( \\frac{4}{\\sqrt{2}} \\)"
+      },
+      {
+        "text": "\\( 1 \\)"
+      },
+      {
+        "text": "\\( 2 \\)"
+      },
+      {
+        "text": "\\( \\frac{3}{2} \\)"
+      }
+    ],
+    "correct": 0,
+    "explanation": "<ol><li>Un punto fijo \\(x\\) de una función \\(f(x)\\) satisface la condición \\(f(x) = x\\).</li><li>Para la función dada \\(f(x) = \\frac{3}{2}x^{-3}\\), establecemos la ecuación: \\(x = \\frac{3}{2}x^{-3}\\).</li><li>Esto se puede reescribir como \\(x = \\frac{3}{2x^3}\\).</li><li>Multiplicando ambos lados por \\(2x^3\\) (considerando \\(x \\neq 0\\)): \\(2x^4 = 3\\).</li><li>Despejando \\(x^4\\): \\(x^4 = \\frac{3}{2}\\).</li><li>Calculando la raíz cuarta: \\(x = \\pm \\sqrt[4]{\\frac{3}{2}}\\).</li><li>Ninguna de las opciones dadas coincide exactamente con \\(\\pm \\sqrt[4]{\\frac{3}{2}}\\) (que es aproximadamente \\(\\pm 1.106\\)). Es plausible que haya un error tipográfico en la función o las opciones.</li><li>Si la función se hubiera especificado como \\(f(x) = 16x^{-3}\\), entonces la ecuación para un punto fijo sería \\(x = 16x^{-3} \\Rightarrow x = \\frac{16}{x^3} \\Rightarrow x^4 = 16\\).</li><li>Esto daría \\(x = \\pm \\sqrt[4]{16} = \\pm 2\\).</li><li>Entre las opciones, \\(2\\) es la opción C. Por lo tanto, asumiendo un probable error tipográfico que lleve a esta solución, la respuesta más coherente sería \\(2\\).</li></ol>",
+    "sourceFileName": "image1.png",
+    "originalQuestionNumber": "4",
+    "internalId": "q-1756259538822-0.01532710895985756",
+    "id": "q-ai-cat-1756260612611-1-2"
+  },
+  {
+    "text": "Es posible determinar los valores de \n            \\(a, n \\in \\mathbb{N}\\)\n             para la función \n            \\(f(x) = ax^n\\)\n             si se sabe que:\n(1) \n            \\(f(1) = 2\\)\n\n(2) \n            \\(f(2) = 4\\)",
+    "options": [
+      {
+        "text": "(1) por sí sola"
+      },
+      {
+        "text": "(2) por sí sola"
+      },
+      {
+        "text": "Ambas juntas, (1) y (2)"
+      },
+      {
+        "text": "Cada una por sí sola, (1) ó (2)"
+      },
+      {
+        "text": "Se requiere información adicional"
+      }
+    ],
+    "correct": 2,
+    "explanation": "<ol><li>Tenemos la función \n            \\(f(x) = ax^n\\)\n             y las condiciones \n            \\(f(1) = 2\\)\n             y \n            \\(f(2) = 4\\)\n            .</li><li>Usando la condición (1): \n            \\(f(1) = a(1)^n = 2 \\Rightarrow a = 2\\)\n            . Con esta sola condición, podemos determinar el valor de \n            \\(a\\)\n            , pero no el de \n            \\(n\\)\n            .</li><li>Usando la condición (2): \n            \\(f(2) = a(2)^n = 4\\)\n            . Con esta sola condición, no podemos determinar ni \n            \\(a\\)\n             ni \n            \\(n\\)\n            .</li><li>Usando ambas condiciones: Sustituimos \n            \\(a = 2\\)\n             (de la condición 1) en la ecuación de la condición 2: \n            \\(2(2)^n = 4 \\Rightarrow 2^{n+1} = 2^2 \\Rightarrow n+1 = 2 \\Rightarrow n = 1\\)\n            .</li><li>Así, se obtiene que \n            \\(a = 2\\)\n             y \n            \\(n = 1\\)\n            . Ambos valores son números naturales, como se especifica (\n            \\(a, n \\in \\mathbb{N}\\)\n            ). Por lo tanto, se necesitan ambas condiciones para determinar los valores de \n            \\(a\\)\n             y \n            \\(n\\)\n            .</li></ol>",
+    "sourceFileName": "image1.png",
+    "originalQuestionNumber": "6",
+    "internalId": "q-1756258290859-0.5579945719040676",
+    "id": "q-ai-cat-1756260612611-1-3"
+  },
+  {
+    "text": "Dados los valores \n\\(b \\in \\mathbb{R}\\)\n y \n\\(m \\in \\mathbb{N}\\)\n y la función \n\\(g(x) = bx^m\\)\n. Es posible determinar que \n\\(g(x)\\)\n es una función creciente, si:\n\n(1) \n\\(g(1) > 0\\)\n\n(2) \n\\(g(3) > g(2)\\)",
+    "options": [
+      {
+        "text": "(1) por sí sola"
+      },
+      {
+        "text": "(2) por sí sola"
+      },
+      {
+        "text": "Ambas juntas, (1) y (2)"
+      },
+      {
+        "text": "Cada una por sí sola, (1) ó (2)"
+      },
+      {
+        "text": "Se requiere información adicional"
+      }
+    ],
+    "correct": 4,
+    "explanation": "<ol><li>Una función \n\\(g(x) = bx^m\\)\n con \n\\(m \\in \\mathbb{N}\\)\n es una función creciente en todo su dominio real si y solo si \n\\(m\\)\n es impar y \n\\(b > 0\\)\n. Si \n\\(m\\)\n es par, la función \n\\(bx^m\\)\n no es monótona creciente en todo \n\\(\\mathbb{R}\\)\n (por ejemplo, \n\\(bx^2\\)\n es decreciente para \n\\(x < 0\\)\n).</li><li>Analicemos la condición (1): \n\\(g(1) > 0\\)\n. Esto implica \n\\(b(1)^m > 0\\)\n, lo que simplifica a \n\\(b > 0\\)\n. Sin embargo, esta condición no proporciona información sobre si \n\\(m\\)\n es impar o par. Por lo tanto, (1) por sí sola no es suficiente para determinar si \n\\(g(x)\\)\n es una función creciente.</li><li>Analicemos la condición (2): \n\\(g(3) > g(2)\\)\n. Esto implica \n\\(b(3)^m > b(2)^m\\)\n. Si \n\\(b > 0\\)\n, entonces \n\\(3^m > 2^m\\)\n, lo cual es siempre cierto para cualquier \n\\(m \\in \\mathbb{N}\\)\n. Si \n\\(b < 0\\)\n, entonces la desigualdad se invertiría a \n\\(3^m < 2^m\\)\n, lo cual es falso para cualquier \n\\(m \\in \\mathbb{N}\\)\n. Por lo tanto, la condición (2) implica que \n\\(b > 0\\)\n. Al igual que la condición (1), no nos informa sobre si \n\\(m\\)\n es impar o par.</li><li>Dado que ambas condiciones (1) y (2) solo nos permiten concluir que \n\\(b > 0\\)\n, pero no nos dan información sobre la paridad de \n\\(m\\)\n, no es posible determinar si \n\\(g(x)\\)\n es una función creciente. Por ejemplo, si \n\\(b=1\\)\n y \n\\(m=2\\)\n, \n\\(g(x) = x^2\\)\n cumple ambas condiciones pero no es una función creciente en todo su dominio.</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "originalQuestionNumber": "9",
+    "internalId": "q-1756258312525-0.6665229931353337",
+    "diagram": {
+      "type": "svg",
+      "code": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"150\">\n  <defs>\n    <marker id=\"arrowhead_000000\" markerWidth=\"10\" markerHeight=\"7\" refX=\"0\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 10 3.5, 0 7\" fill=\"#000000\" /></marker>\n  </defs>\n  <rect x=\"1\" y=\"1\" width=\"198\" height=\"148\" fill=\"none\" stroke=\"lightgray\" />\n  <line x1=\"102.30953979492188\" y1=\"117.29154396057129\" x2=\"102.90941619873047\" y2=\"33.30833435058594\" fill=\"none\" stroke=\"#000000\" stroke-width=\"2\" marker-end=\"url(#arrowhead_000000)\" />\n  <line x1=\"20.72585678100586\" y1=\"104.69406127929688\" x2=\"174.89503479003906\" y2=\"104.69406127929688\" fill=\"none\" stroke=\"#000000\" stroke-width=\"2\" marker-end=\"url(#arrowhead_000000)\" />\n  <path d=\"M 14.127172470092773,90.89682006835938 Q 128.10438537597656,93.29634094238281 137.1025848388672,-1.484706163406372\" fill=\"none\" stroke=\"#1c71d8\" stroke-width=\"2\" />\n</svg>"
+    },
+    "id": "q-ai-cat-1756260612611-1-4"
+  },
+  {
+    "text": "Dados \n                  \n                    \\(a, b\\)\n                  \n                   reales positivos y \n                  \n                    \\(n, m\\)\n                  \n                   números naturales, considerar las funciones \n                  \n                    \\(f(x) = ax^n\\)\n                  \n                   y \n                  \n                    \\(g(x) = bx^m\\)\n                  \n                  . Entonces, podemos determinar que \n                  \n                    \\(a > b\\)\n                  \n                   si:\n(1) \n                  \n                    \\(f(1) > g(1)\\)\n                  \n                  .\n(2) Existe un \n                  \n                    \\(x_0 \\in \\mathbb{R}\\)\n                  \n                  , tal que \n                  \n                    \\(f(x_0) > g(x_0)\\)\n                  \n                  .",
+    "options": [
+      {
+        "text": "(1) por sí sola"
+      },
+      {
+        "text": "(2) por sí sola"
+      },
+      {
+        "text": "Ambas juntas, (1) y (2)"
+      },
+      {
+        "text": "Cada una por sí sola, (1) ó (2)"
+      },
+      {
+        "text": "Se requiere información adicional"
+      }
+    ],
+    "correct": 0,
+    "explanation": "<ol><li>Analicemos la condición (1): \n                  \n                    \\(f(1) > g(1)\\)\n                  \n                  .</li><li>Sustituyendo \n                  \n                    \\(x = 1\\)\n                  \n                   en las funciones dadas, obtenemos: \n                  \n                    \\(f(1) = a(1)^n = a\\)\n                  \n                   y \n                  \n                    \\(g(1) = b(1)^m = b\\)\n                  \n                  .</li><li>Por lo tanto, la condición (1) se convierte directamente en \n                  \n                    \\(a > b\\)\n                  \n                  . Esto significa que la condición (1) por sí sola es suficiente para determinar que \n                  \n                    \\(a > b\\)\n                  \n                  .</li><li>Ahora, analicemos la condición (2): Existe un \n                  \n                    \\(x_0 \\in \\mathbb{R}\\)\n                  \n                   tal que \n                  \n                    \\(f(x_0) > g(x_0)\\)\n                  \n                  , lo que implica \n                  \n                    \\(ax_0^n > bx_0^m\\)\n                  \n                  .</li><li>Consideremos un contraejemplo para la condición (2). Sean \n                  \n                    \\(a=1, b=2, n=3, m=2\\)\n                  \n                  . En este caso, \n                  \n                    \\(a < b\\)\n                  \n                  . Las funciones serían \n                  \n                    \\(f(x) = x^3\\)\n                  \n                   y \n                  \n                    \\(g(x) = 2x^2\\)\n                  \n                  .</li><li>Buscamos si existe un \n                  \n                    \\(x_0\\)\n                  \n                   tal que \n                  \n                    \\(f(x_0) > g(x_0)\\)\n                  \n                  , es decir, \n                  \n                    \\(x_0^3 > 2x_0^2\\)\n                  \n                  .</li><li>Si \n                  \n                    \\(x_0 > 0\\)\n                  \n                  , podemos dividir por \n                  \n                    \\(x_0^2\\)\n                  \n                   (ya que \n                  \n                    \\(x_0^2 > 0\\)\n                  \n                  ), obteniendo \n                  \n                    \\(x_0 > 2\\)\n                  \n                  . Si elegimos \n                  \n                    \\(x_0 = 3\\)\n                  \n                  , entonces \n                  \n                    \\(f(3) = 3^3 = 27\\)\n                  \n                   y \n                  \n                    \\(g(3) = 2(3^2) = 18\\)\n                  \n                  . Aquí, \n                  \n                    \\(f(3) > g(3)\\)\n                  \n                   se cumple.</li><li>Dado que encontramos un caso donde \n                  \n                    \\(a < b\\)\n                  \n                   pero la condición (2) se cumple, la condición (2) no es suficiente por sí sola para determinar que \n                  \n                    \\(a > b\\)\n                  \n                  .</li><li>Por lo tanto, solo la condición (1) es suficiente.</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "originalQuestionNumber": "15",
+    "internalId": "q-1756258313850-0.030700002486360956",
+    "id": "q-ai-cat-1756260612611-1-5"
+  },
+  {
+    "text": "Un vehículo avanza horizontalmente desde un punto \n            \\(A\\)\n             hacia un punto \n            \\(B\\)\n            . Considere que la posición del punto \n            \\(A\\)\n             corresponde a \n            \\(0 \\, \\text{metros}\\)\n             y la del punto \n            \\(B\\)\n             a la posición \n            \\(3.125 \\, \\text{metros}\\)\n            .\nSi la posición en metros del vehículo en el instante \n            \\(t\\)\n             está dada por \n            \\(x(t) = 5t^4\\)\n            , entonces el instante en que el vehículo llega al punto \n            \\(B\\)\n             es:",
+    "options": [
+      {
+        "text": "1"
+      },
+      {
+        "text": "10"
+      },
+      {
+        "text": "4"
+      },
+      {
+        "text": "5"
+      },
+      {
+        "text": "No hay un valor específico."
+      }
+    ],
+    "correct": 3,
+    "explanation": "<ol><li>Se nos da la función de posición \n            \\(x(t) = 5t^4\\)\n             y se sabe que el punto \n            \\(B\\)\n             está en la posición \n            \\(3.125 \\, \\text{metros}\\)\n            .</li><li>Para encontrar el instante \n            \\(t\\)\n             en que el vehículo llega al punto \n            \\(B\\)\n            , igualamos la función de posición a la distancia de \n            \\(B\\)\n            : \n            \\(5t^4 = 3.125\\)\n            .</li><li>Despejamos \n            \\(t^4\\)\n            : \n            \\(t^4 = \\frac{3.125}{5} = 0.625\\)\n            .</li><li>Calculando la cuarta raíz de \n            \\(0.625\\)\n            , obtenemos \n            \\(t = (0.625)^{1/4} \\approx 0.889\\)\n            . Ninguna de las opciones de respuesta es un valor decimal.</li><li>Al revisar las opciones, notamos que si el punto \n            \\(B\\)\n             se encontrara en \n            \\(3125 \\, \\text{metros}\\)\n             (en lugar de \n            \\(3.125 \\, \\text{metros}\\)\n            ), el cálculo sería: \n            \\(5t^4 = 3125 \\Rightarrow t^4 = \\frac{3125}{5} = 625\\)\n            .</li><li>Entonces, \n            \\(t = \\sqrt[4]{625}\\)\n             lo que resulta en \n            \\(t = 5\\)\n            . Dado que \n            \\(5\\)\n             es una de las opciones, es probable que haya habido un error tipográfico en el valor de la posición del punto \n            \\(B\\)\n             en el enunciado original.</li></ol>",
+    "sourceFileName": "image1.png",
+    "originalQuestionNumber": "7",
+    "internalId": "q-1756258290859-0.4494102940479153",
+    "id": "q-ai-cat-1756260612611-1-6"
+  },
+  {
+    "text": "Sean las funciones \n                  \n                    \\(f(x) = x^3\\)\n                  \n                   y \n                  \n                    \\(g(x) = 3x^2\\)\n                  \n                  . ¿Cuál de las siguientes afirmaciones es verdadera? (considere el gráfico adjunto)",
+    "options": [
+      {
+        "text": "Si \n                  \n                    \\(-3 \\le x \\le 3\\)\n                  \n                   entonces \n                  \n                    \\(g(x) \\le f(x)\\)\n                  \n                  ."
+      },
+      {
+        "text": "Ambas funciones coinciden si \n                  \n                    \\(x = 0\\)\n                  \n                  ."
+      },
+      {
+        "text": "La función \n                  \n                    \\(f(x)\\)\n                  \n                   es decreciente"
+      },
+      {
+        "text": "Si \n                  \n                    \\(x = -3\\)\n                  \n                   entonces \n                  \n                    \\(f(x) > g(x)\\)\n                  \n                  "
+      }
+    ],
+    "correct": 1,
+    "explanation": "<ol><li>Identificamos las funciones dadas: \n                  \n                    \\(f(x) = x^3\\)\n                  \n                   (curva rosa/morada) y \n                  \n                    \\(g(x) = 3x^2\\)\n                  \n                   (curva azul).</li><li>Analizamos cada opción basándonos en el gráfico y las propiedades de las funciones.</li><li>Opción A: \"Si \n                  \n                    \\(-3 \\le x \\le 3\\)\n                  \n                   entonces \n                  \n                    \\(g(x) \\le f(x)\\)\n                  \n                  \". Observando el gráfico, vemos que \n                  \n                    \\(g(x)\\)\n                  \n                   está por encima de \n                  \n                    \\(f(x)\\)\n                  \n                   en la mayor parte del intervalo, por ejemplo, para \n                  \n                    \\(x=1\\)\n                  \n                  , \n                  \n                    \\(g(1)=3\\)\n                  \n                   y \n                  \n                    \\(f(1)=1\\)\n                  \n                  , por lo que \n                  \n                    \\(g(1) > f(1)\\)\n                  \n                  . Así que esta afirmación es falsa.</li><li>Opción B: \"Ambas funciones coinciden si \n                  \n                    \\(x = 0\\)\n                  \n                  \". Calculamos \n                  \n                    \\(f(0) = 0^3 = 0\\)\n                  \n                   y \n                  \n                    \\(g(0) = 3(0)^2 = 0\\)\n                  \n                  . Ambas funciones tienen el mismo valor en \n                  \n                    \\(x = 0\\)\n                  \n                  . Por lo tanto, coinciden en \n                  \n                    \\(x = 0\\)\n                  \n                  . Esta afirmación es verdadera. (También coinciden en \n                  \n                    \\(x=3\\)\n                  \n                   ya que \n                  \n                    \\(3^3 = 27\\)\n                  \n                   y \n                  \n                    \\(3(3^2) = 27\\)\n                  \n                  ).</li><li>Opción C: \"La función \n                  \n                    \\(f(x)\\)\n                  \n                   es decreciente\". La función \n                  \n                    \\(f(x) = x^3\\)\n                  \n                   es estrictamente creciente en todo su dominio, no decreciente. Así que esta afirmación es falsa.</li><li>Opción D: \"Si \n                  \n                    \\(x = -3\\)\n                  \n                   entonces \n                  \n                    \\(f(x) > g(x)\\)\n                  \n                  \". Calculamos \n                  \n                    \\(f(-3) = (-3)^3 = -27\\)\n                  \n                   y \n                  \n                    \\(g(-3) = 3(-3)^2 = 3(9) = 27\\)\n                  \n                  . Claramente \n                  \n                    \\(-27 < 27\\)\n                  \n                  , por lo que \n                  \n                    \\(f(-3) > g(-3)\\)\n                  \n                   es falsa.</li><li>Concluimos que la única afirmación verdadera es la B.</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "diagram": {
+      "type": "svg",
+      "code": "<svg viewBox=\"0 0 380 250\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrowhead\" markerWidth=\"10\" markerHeight=\"7\" refX=\"0\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 10 3.5, 0 7\" fill=\"black\" /></marker></defs><line x1=\"25\" y1=\"175\" x2=\"350\" y2=\"175\" stroke=\"black\" stroke-width=\"1\" marker-end=\"url(#arrowhead)\" /><line x1=\"175\" y1=\"25\" x2=\"175\" y2=\"230\" stroke=\"black\" stroke-width=\"1\" marker-end=\"url(#arrowhead)\" marker-start=\"url(#arrowhead)\" /><foreignObject x=\"20\" y=\"180\" width=\"30\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:center;\">-3</div></foreignObject><foreignObject x=\"70\" y=\"180\" width=\"30\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:center;\">-2</div></foreignObject><foreignObject x=\"120\" y=\"180\" width=\"30\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:center;\">-1</div></foreignObject><foreignObject x=\"220\" y=\"180\" width=\"30\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:center;\">1</div></foreignObject><foreignObject x=\"270\" y=\"180\" width=\"30\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:center;\">2</div></foreignObject><foreignObject x=\"320\" y=\"180\" width=\"30\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:center;\">3</div></foreignObject><foreignObject x=\"150\" y=\"65\" width=\"20\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:right;\">20</div></foreignObject><foreignObject x=\"150\" y=\"115\" width=\"20\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:right;\">10</div></foreignObject><foreignObject x=\"150\" y=\"215\" width=\"20\" height=\"20\"><div xmlns=\"http://www.w3.org/1993/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black; text-align:right;\">-10</div></foreignObject><line x1=\"25\" y1=\"172\" x2=\"25\" y2=\"178\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"75\" y1=\"172\" x2=\"75\" y2=\"178\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"125\" y1=\"172\" x2=\"125\" y2=\"178\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"225\" y1=\"172\" x2=\"225\" y2=\"178\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"275\" y1=\"172\" x2=\"275\" y2=\"178\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"325\" y1=\"172\" x2=\"325\" y2=\"178\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"172\" y1=\"75\" x2=\"178\" y2=\"75\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"172\" y1=\"125\" x2=\"178\" y2=\"125\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"172\" y1=\"225\" x2=\"178\" y2=\"225\" stroke=\"black\" stroke-width=\"1\" /><line x1=\"25\" y1=\"75\" x2=\"325\" y2=\"75\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"25\" y1=\"125\" x2=\"325\" y2=\"125\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"25\" y1=\"225\" x2=\"325\" y2=\"225\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"75\" y1=\"75\" x2=\"75\" y2=\"225\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"125\" y1=\"75\" x2=\"125\" y2=\"225\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"225\" y1=\"75\" x2=\"225\" y2=\"225\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"275\" y1=\"75\" x2=\"275\" y2=\"225\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"325\" y1=\"75\" x2=\"325\" y2=\"225\" stroke=\"#ccc\" stroke-width=\"0.5\" /><path d=\"M67.5 225 L75 215 L100 191.9 L125 180 L150 175.625 L175 175 L200 174.375 L225 170 L250 158.125 L275 135 L300 96.875 L310.5 75\" stroke=\"#C778A4\" stroke-width=\"2\" fill=\"none\" /><path d=\"M46 75 L50 81.25 L75 115 L100 141.25 L125 160 L150 171.25 L175 175 L200 171.25 L225 160 L250 141.25 L275 115 L300 81.25 L304 75\" stroke=\"#6F8EDC\" stroke-width=\"2\" fill=\"none\" /><foreignObject x=\"100\" y=\"150\" width=\"50\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">\\(3x^2\\)</div></foreignObject><foreignObject x=\"250\" y=\"130\" width=\"40\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">\\(x^3\\)</div></foreignObject></svg>"
+    },
+    "originalQuestionNumber": "14",
+    "internalId": "q-1756258313850-0.6904197576131831",
+    "id": "q-ai-cat-1756260612611-1-7"
+  },
+  {
+    "text": "Dada la función \\(f\\), tal que \\(f(x) = -a^{x+1}\\), ¿cuál de los siguientes argumentos garantiza que \\(f\\) sea una función exponencial?",
+    "options": [
+      {
+        "text": "Que \\(x \\in \\mathbb{R}\\) y que \\(a < 0\\)"
+      },
+      {
+        "text": "Que \\(x \\in \\mathbb{R} - \\{-1\\}\\) y que \\(a > 0\\)"
+      },
+      {
+        "text": "Que \\(x \\in \\mathbb{R}\\) y que \\(a \\in \\mathbb{R}^{+} - \\{-1\\}\\)"
+      },
+      {
+        "text": "Que \\(x \\in \\mathbb{R}\\) y que \\(a \\in \\mathbb{R}^{+} - \\{1\\}\\)"
+      }
+    ],
+    "correct": 3,
+    "explanation": "<ol><li>Una función exponencial general se define como \\(h(x) = c \\cdot b^x\\), donde la base \\(b\\) debe ser un número real positivo y distinto de \\(1\\) (es decir, \\(b \\in \\mathbb{R}^{+} - \\{1\\}\\)).</li><li>La función dada es \\(f(x) = -a^{x+1}\\), que se puede reescribir como \\(f(x) = -a \\cdot a^x\\).</li><li>En esta forma, la base de la potencia es \\(a\\). Para que \\(f\\) sea una función exponencial, su base \\(a\\) debe cumplir la condición \\(a \\in \\mathbb{R}^{+} - \\{1\\}\\).</li><li>El dominio de \\(x\\) para las funciones exponenciales es todo el conjunto de los números reales, \\(x \\in \\mathbb{R}\\).</li><li>Por lo tanto, la opción que garantiza que \\(f\\) sea una función exponencial es aquella donde \\(x \\in \\mathbb{R}\\) y \\(a \\in \\mathbb{R}^{+} - \\{1\\}\\).</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "originalQuestionNumber": "1",
+    "internalId": "q-1756258310978-0.338664934818632",
+    "id": "q-ai-cat-1756260612611-2-0"
+  },
+  {
+    "text": "¿Cuál afirmación es correcta sobre la función exponencial \n            \\(f\\)\n            , tal que \n            \\(f(x) = m^{-x}\\)\n            ?",
+    "options": [
+      {
+        "text": "Si los valores de \n            \\(x\\)\n             son reales y \n            \\(m\\)\n             es un real positivo distinto de \n            \\(1\\)\n            , \n            \\(f\\)\n             es decreciente y el intervalo de los valores reales de \n            \\(f\\)\n            , corresponde a \n            \\([0, \\infty[+\\)\n            ."
+      },
+      {
+        "text": "Si los valores de \n            \\(x\\)\n             son reales y \n            \\(m\\)\n             es un real positivo distinto de \n            \\(1\\)\n            , \n            \\(f\\)\n             es decreciente y el intervalo de los valores reales de \n            \\(f\\)\n            , corresponde a \n            \\(]-\\infty, 0[\\)\n            ."
+      },
+      {
+        "text": "\n            \\(x\\)\n             puede ser cualquier valor real, mientras que \n            \\(m\\)\n             debe ser un real positivo."
+      },
+      {
+        "text": "Si los valores de \n            \\(x\\)\n             son reales y \n            \\(m\\)\n             es un real, tal que \n            \\(0 < m < 1\\)\n            , \n            \\(f\\)\n             es creciente y el intervalo de los valores de \n            \\(f\\)\n            , corresponde a \n            \\([0, \\infty[+\\)\n            ."
+      }
+    ],
+    "correct": 0,
+    "explanation": "<ol><li>La función dada es \n            \\(f(x) = m^{-x}\\)\n            . Esta puede reescribirse como \n            \\(f(x) = (m^{-1})^x = (\\frac{1}{m})^x\\)\n            .</li><li>Para que \n            \\(f(x)\\)\n             sea una función exponencial bien definida para todos los valores reales de \n            \\(x\\)\n            , la base \n            \\(m\\)\n             debe ser un número real positivo (\n            \\(m > 0\\)\n            ).</li><li>El dominio de una función exponencial es el conjunto de todos los números reales, lo que significa que \n            \\(x\\)\n             puede ser cualquier valor real.</li><li>Analizando las opciones:\n    <ul>\n        <li>**Opción A y B**: Afirman que \n            \\(f\\)\n             es decreciente si \n            \\(m \\ne 1\\)\n            . Esto solo es cierto si \n            \\(m > 1\\)\n             (ya que entonces \n            \\(0 < \\frac{1}{m} < 1\\)\n            ). Si \n            \\(0 < m < 1\\)\n            , \n            \\(f\\)\n             sería creciente. Además, el rango (intervalo de valores reales) de una función exponencial es \n            \\((0, \\infty)\\)\n            , no \n            \\([0, \\infty[+\\)\n             (que incluye el cero) ni \n            \\(]-\\infty, 0[\\)\n            . Por lo tanto, las opciones A y B son incorrectas.</li>\n        <li>**Opción C**: Establece que \n            \\(x\\)\n             puede ser cualquier valor real y que \n            \\(m\\)\n             debe ser un real positivo. Ambas afirmaciones son correctas para que \n            \\(f(x) = m^{-x}\\)\n             sea una función exponencial definida para todo \n            \\(x\\)\n            . Aunque no describe el comportamiento de crecimiento/decrecimiento o el rango, todas las afirmaciones son verdaderas.</li>\n        <li>**Opción D**: Afirma que si \n            \\(0 < m < 1\\)\n            , \n            \\(f\\)\n             es creciente. Esto es correcto, ya que si \n            \\(0 < m < 1\\)\n            , entonces \n            \\(\\frac{1}{m} > 1\\)\n            , lo que hace que la función sea creciente. Sin embargo, el rango es incorrectamente dado como \n            \\([0, \\infty[+\\)\n            .</li>\n    </ul>\n</li><li>Considerando que las opciones A, B y D contienen afirmaciones incorrectas sobre el comportamiento general de la función o su rango, la opción C es la única que es completamente correcta en todas sus afirmaciones.</li></ol>",
+    "sourceFileName": "image1.png",
+    "originalQuestionNumber": "8",
+    "internalId": "q-1756258290859-0.12217103585423672",
+    "id": "q-ai-cat-1756260612611-2-1"
+  },
+  {
+    "text": "¿Cuál afirmación es correcta, respecto a la función \n                  \\(f(x) = -p^x - 1\\)\n                  ?",
+    "options": [
+      {
+        "text": "Si los valores de \n                  \\(x\\)\n                   son reales y \n                  \\(p\\)\n                   es un real positivo distinto de \n                  \\(1\\)\n                  , \n                  \\(f\\)\n                   es creciente y el intervalo de los valores reales de \n                  \\(f\\)\n                  , corresponde a \n                  \\(-1, \\infty+\\)\n                  ."
+      },
+      {
+        "text": "Si los valores de \n                  \\(x\\)\n                   son reales y \n                  \\(p\\)\n                   es un real positivo distinto de \n                  \\(1\\)\n                  , \n                  \\(f\\)\n                   es decreciente y el intervalo de los valores reales de \n                  \\(f\\)\n                  , corresponde a \n                  \\(-\\infty, -1[\\)\n                  ."
+      },
+      {
+        "text": "Considerando valores reales para \n                  \\(x\\)\n                   y valores reales positivos para \n                  \\(p\\)\n                   distintos de \n                  \\(1\\)\n                  , \n                  \\(f\\)\n                   no es una función exponencial."
+      },
+      {
+        "text": "Si los valores \n                  \\(x\\)\n                   son reales y \n                  \\(p\\)\n                   es un real positivo distinto de \n                  \\(1\\)\n                  , \n                  \\(f\\)\n                   es decreciente y \n                  \\(f\\)\n                   corresponde a la simetría axial, por el eje de las abscisas, de la función \n                  \\(g(x) = p^x + 1\\)\n                  ."
+      }
+    ],
+    "correct": 3,
+    "explanation": "<ol><li>Analizamos la función \n                  \\(f(x) = -p^x - 1\\)\n                  .</li><li>Determinamos el rango (intervalo de los valores reales) de \n                  \\(f(x)\\)\n                  . La función \n                  \\(p^x\\)\n                   (con \n                  \\(p > 0, p \\neq 1\\)\n                  ) siempre produce valores positivos, \n                  \\(p^x > 0\\)\n                  .</li><li>Multiplicar por \n                  \\(-1\\)\n                   invierte el signo, por lo que \n                  \\(-p^x < 0\\)\n                  . Restar \n                  \\(1\\)\n                   desplaza la función hacia abajo, resultando en \n                  \\(-p^x - 1 < -1\\)\n                  . Por lo tanto, el rango de \n                  \\(f(x)\\)\n                   es \n                  \\((-\\infty, -1)\\)\n                  . Esto hace que la parte del rango de la opción A sea incorrecta y la parte del rango de la opción B sea correcta.</li><li>Ahora analizamos si \n                  \\(f\\)\n                   es creciente o decreciente. Calculamos la derivada: \n                  \\(f'(x) = -p^x \\ln(p)\\)\n                  .</li><li>Si \n                  \\(p > 1\\)\n                  , entonces \n                  \\(\\ln(p) > 0\\)\n                  . Como \n                  \\(-p^x\\)\n                   es siempre negativo, \n                  \\(f'(x)\\)\n                   será negativo, lo que indica que \n                  \\(f(x)\\)\n                   es decreciente.</li><li>Si \n                  \\(0 < p < 1\\)\n                  , entonces \n                  \\(\\ln(p) < 0\\)\n                  . Como \n                  \\(-p^x\\)\n                   es siempre negativo, \n                  \\(f'(x)\\)\n                   será positivo (negativo por negativo), lo que indica que \n                  \\(f(x)\\)\n                   es creciente.</li><li>La pregunta no especifica si \n                  \\(p > 1\\)\n                   o \n                  \\(0 < p < 1\\)\n                  . Sin embargo, en el contexto de un examen de opción múltiple, y dado que la opción B es la única que tiene una descripción de rango correcta universalmente (\n                  \\((-\\infty, -1)\\)\n                  ), y asumiendo que se refiere al caso más común (\n                  \\(p > 1\\)\n                  ) para la decrecimiento, la opción B es la más completa y correcta.</li><li>La opción C es incorrecta porque \n                  \\(f(x)\\)\n                   es una transformación de una función exponencial (\n                  \\(f(x) = c \\cdot p^x + d\\)\n                  ).</li><li>La opción D es incorrecta en su totalidad porque, aunque la simetría axial es correcta (\n                  \\(f(x) = -(p^x + 1) = -g(x)\\)\n                  ), la afirmación de que \n                  \\(f\\)\n                   es \"decreciente\" no es universalmente cierta para todos los \n                  \\(p\\)\n                   distintos de 1.</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "originalQuestionNumber": "13",
+    "internalId": "q-1756258305034-0.5158176200611811",
+    "id": "q-ai-cat-1756260612611-2-2"
+  },
+  {
+    "text": "La imagen adjunta es la gráfica de una función exponencial \n\\(f(x)\\)\n. ¿Cuál de las siguientes funciones podría ser la que está representada en el gráfico?",
+    "options": [
+      {
+        "text": "\n\\(f(x) = 2^{2x} + 1\\)\n"
+      },
+      {
+        "text": "\n\\(f(x) = 2^{x+1} + 1\\)\n"
+      },
+      {
+        "text": "\n\\(f(x) = 2^{x} + 1\\)\n"
+      },
+      {
+        "text": "\n\\(f(x) = 2^{x-1} + 1\\)\n"
+      }
+    ],
+    "correct": 1,
+    "explanation": "<ol><li>Observamos el gráfico de la función exponencial. Identificamos la asíntota horizontal, que es \n\\(y=1\\)\n. Esto significa que la función debe tener un término constante de \n\\(+1\\)\n, lo cual cumplen todas las opciones.</li><li>Determinamos el punto de corte con el eje \n\\(Y\\)\n (\n\\(x=0\\)\n). En el gráfico, cuando \n\\(x=0\\)\n, \n\\(y=2\\)\n.</li><li>Evaluamos cada opción en \n\\(x=0\\)\n:\n    <ul>\n        <li>A) \n\\(f(0) = 2^{2(0)} + 1 = 2^0 + 1 = 1 + 1 = 2\\)\n. Coincide con el gráfico.</li>\n        <li>B) \n\\(f(0) = 2^{0+1} + 1 = 2^1 + 1 = 2 + 1 = 3\\)\n. No coincide.</li>\n        <li>C) \n\\(f(0) = 2^0 + 1 = 1 + 1 = 2\\)\n. Coincide con el gráfico.</li>\n        <li>D) \n\\(f(0) = 2^{0-1} + 1 = 2^{-1} + 1 = 0.5 + 1 = 1.5\\)\n. No coincide.</li>\n    </ul></li><li>Las opciones A y C son las únicas que pasan por \n\\((0, 2)\\)\n. Ahora evaluamos un segundo punto, por ejemplo, \n\\(x=1\\)\n. En el gráfico, cuando \n\\(x=1\\)\n, \n\\(y=3\\)\n.</li><li>Evaluamos las opciones A y C en \n\\(x=1\\)\n:\n    <ul>\n        <li>A) \n\\(f(1) = 2^{2(1)} + 1 = 2^2 + 1 = 4 + 1 = 5\\)\n. No coincide.</li>\n        <li>C) \n\\(f(1) = 2^1 + 1 = 2 + 1 = 3\\)\n. Coincide con el gráfico.</li>\n    </ul></li><li>Por lo tanto, la función que mejor representa el gráfico es \n\\(f(x) = 2^x + 1\\)\n.</li></ol>",
+    "sourceFileName": "quiz_page_1.png",
+    "diagram": {
+      "type": "svg",
+      "code": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrowhead\" markerWidth=\"10\" markerHeight=\"7\" refX=\"0\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 10 3.5, 0 7\" fill=\"black\" /></marker></defs><!-- Grid lines --><line x1=\"10\" y1=\"150\" x2=\"210\" y2=\"150\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"140\" x2=\"210\" y2=\"140\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"130\" x2=\"210\" y2=\"130\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"110\" x2=\"210\" y2=\"110\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"100\" x2=\"210\" y2=\"100\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"90\" x2=\"210\" y2=\"90\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"80\" x2=\"210\" y2=\"80\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"70\" x2=\"210\" y2=\"70\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"60\" x2=\"210\" y2=\"60\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"50\" x2=\"210\" y2=\"50\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line x1=\"10\" y1=\"40\" x2=\"210\" y2=\"40\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"10\" y2=\"150\" x2=\"10\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"20\" y2=\"150\" x2=\"20\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"30\" y2=\"150\" x2=\"30\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"40\" y2=\"150\" x2=\"40\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"50\" y2=\"150\" x2=\"50\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"60\" y2=\"150\" x2=\"60\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"70\" y2=\"150\" x2=\"70\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"80\" y2=\"150\" x2=\"80\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"90\" y2=\"150\" x2=\"90\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"100\" y2=\"150\" x2=\"100\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"110\" y2=\"150\" x2=\"110\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"130\" y2=\"150\" x2=\"130\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"140\" y2=\"150\" x2=\"140\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"150\" y2=\"150\" x2=\"150\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"160\" y2=\"150\" x2=\"160\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"170\" y2=\"150\" x2=\"170\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"180\" y2=\"150\" x2=\"180\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"190\" y2=\"150\" x2=\"190\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"200\" y2=\"150\" x2=\"200\" stroke=\"#ccc\" stroke-width=\"0.5\" /><line y1=\"40\" x1=\"210\" y2=\"150\" x2=\"210\" stroke=\"#ccc\" stroke-width=\"0.5\" /><!-- Axes --><line x1=\"10\" y1=\"120\" x2=\"210\" y2=\"120\" stroke=\"black\" stroke-width=\"1.5\" marker-end=\"url(#arrowhead)\" /><line x1=\"120\" y1=\"40\" x2=\"120\" y2=\"150\" stroke=\"black\" stroke-width=\"1.5\" marker-end=\"url(#arrowhead)\" /><!-- Axis Labels (X and Y) --><foreignObject x=\"210\" y=\"125\" width=\"20\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">X</div></foreignObject><foreignObject x=\"125\" y=\"35\" width=\"20\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:black;\">Y</div></foreignObject><!-- Number Labels on X-axis --><foreignObject x=\"15\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">-11</div></foreignObject><foreignObject x=\"45\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">-8</div></foreignObject><foreignObject x=\"75\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">-5</div></foreignObject><foreignObject x=\"105\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">-2</div></foreignObject><foreignObject x=\"125\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">1</div></div></foreignObject><foreignObject x=\"155\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">4</div></div></foreignObject><foreignObject x=\"185\" y=\"125\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">7</div></div></foreignObject><!-- Number Labels on Y-axis --><foreignObject x=\"100\" y=\"45\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">8</div></foreignObject><foreignObject x=\"100\" y=\"65\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">6</div></foreignObject><foreignObject x=\"100\" y=\"85\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">4</div></foreignObject><foreignObject x=\"100\" y=\"105\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">2</div></foreignObject><foreignObject x=\"100\" y=\"135\" width=\"20\" height=\"15\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:8px; font-family:Arial, sans-serif; color:black;\">-2</div></foreignObject><!-- The function curve f(x) = 2^x + 1 --><path d=\"M20,119.99 L30,119.98 L40,119.96 L50,119.92 L60,119.84 L70,119.69 L80,119.375 L90,118.75 L100,117.5 L110,115 L120,100 L130,90 L140,70 L148,40.5\" stroke=\"blue\" stroke-width=\"2\" fill=\"none\" /><!-- f(x) label --><foreignObject x=\"25\" y=\"90\" width=\"30\" height=\"20\"><div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"font-size:10px; font-family:Arial, sans-serif; color:blue;\">f(x)</div></foreignObject></svg>"
+    },
+    "originalQuestionNumber": "10",
+    "internalId": "q-1756258312525-0.21862716051453823",
+    "id": "q-ai-cat-1756260612611-2-3"
+  },
+  {
+    "text": "¿Cuáles son los interceptos con los ejes de la abscisa y ordenada, respectivamente, de la función h(x) = 2^{x+2} - 1?",
+    "options": [
+      {
+        "text": "-2 y 3"
+      },
+      {
+        "text": "-2 y -3"
+      },
+      {
+        "text": "2 y 3"
+      },
+      {
+        "text": "0 y 3"
+      }
+    ],
+    "correct": 0,
+    "explanation": "<ol><li>Para encontrar el intercepto con el eje de la ordenada (eje \\(y\\)), hacemos \\(x = 0\\).</li><li>Sustituyendo \\(x = 0\\) en la función: \\(h(0) = 2^{0+2} - 1 = 2^2 - 1 = 4 - 1 = 3\\). Por lo tanto, el intercepto con el eje \\(y\\) es \\(3\\).</li><li>Para encontrar el intercepto con el eje de la abscisa (eje \\(x\\)), hacemos \\(h(x) = 0\\).</li><li>Igualando la función a cero: \\(0 = 2^{x+2} - 1\\).</li><li>Sumamos \\(1\\) a ambos lados: \\(1 = 2^{x+2}\\).</li><li>Como \\(2^0 = 1\\), podemos igualar los exponentes: \\(0 = x+2\\).</li><li>Despejando \\(x\\): \\(x = -2\\). Por lo tanto, el intercepto con el eje \\(x\\) es \\(-2\\).</li><li>Los interceptos son \\(-2\\) (abscisa) y \\(3\\) (ordenada).</li></ol>",
+    "sourceFileName": "quiz_page_image.png",
+    "originalQuestionNumber": "19",
+    "internalId": "q-1756258266448-0.9268607974380146",
+    "id": "q-ai-cat-1756260612611-2-4"
+  },
+  {
+    "text": "La siguiente gráfica corresponde a la función exponencial \\(g(x) = 2^{x+a} + b\\), cuyo recorrido (valores de \\(g(x)\\)) está definido por el intervalo de números reales: \\([b, \\infty[\\). ¿Cuáles son los valores de las constantes \\(a\\) y \\(b\\), respectivamente?",
+    "options": [
+      {
+        "text": "\\( a = 2 \\text{ y } b = -2 \\)"
+      },
+      {
+        "text": "\\( a = 0 \\text{ y } b = -2 \\)"
+      },
+      {
+        "text": "\\( a = 1 \\text{ y } b = -2 \\)"
+      },
+      {
+        "text": "\\( a = 1 \\text{ y } b = 2 \\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "<ol><li>La función exponencial tiene la forma general \\(g(x) = 2^{x+a} + b\\).</li><li>El valor de \\(b\\) representa la asíntota horizontal de la función. Observando la gráfica, la asíntota horizontal es la línea \\(y = -2\\). Por lo tanto, \\(b = -2\\).</li><li>Sustituyendo \\(b = -2\\) en la ecuación de la función, obtenemos \\(g(x) = 2^{x+a} - 2\\).</li><li>Para encontrar el valor de \\(a\\), podemos usar un punto por el que pasa la gráfica. El punto de corte con el eje Y es \\((0, -1)\\).</li><li>Sustituimos \\(x = 0\\) y \\(g(x) = -1\\) en la ecuación: \\(-1 = 2^{0+a} - 2\\).</li><li>Simplificando la ecuación: \\(-1 = 2^a - 2\\).</li><li>Sumando \\(2\\) a ambos lados: \\(1 = 2^a\\).</li><li>Para que \\(2^a = 1\\), el exponente \\(a\\) debe ser \\(0\\).</li><li>Por lo tanto, los valores de las constantes son \\(a = 0\\) y \\(b = -2\\).</li></ol>",
+    "sourceFileName": "image1.png",
+    "diagram": {
+      "type": "svg",
+      "code": "<svg viewBox=\"0 0 520 320\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <marker id=\"arrowhead_000000\" markerWidth=\"10\" markerHeight=\"7\" refX=\"0\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 10 3.5, 0 7\" fill=\"#000000\" /></marker>\n  </defs>\n  <line x1=\"57.00655746459961\" y1=\"160.77976989746094\" x2=\"429.7720031738281\" y2=\"159.22007751464844\" fill=\"none\" stroke=\"#000000\" stroke-width=\"2\" marker-end=\"url(#arrowhead_000000)\" />\n  <line x1=\"295.6388244628906\" y1=\"322.9873352050781\" x2=\"298.7582092285156\" y2=\"7.9303388595581055\" fill=\"none\" stroke=\"#000000\" stroke-width=\"2\" marker-end=\"url(#arrowhead_000000)\" />\n  <path d=\"M 41.40967559814453,221.60760498046875 Q 359.5860595703125,229.4060516357422 368.9441833496094,-4.547165870666504\" fill=\"none\" stroke=\"#1c71d8\" stroke-width=\"2\" />\n</svg>"
+    },
+    "originalQuestionNumber": "5",
+    "internalId": "q-1756259538822-0.22391897524618387",
+    "id": "q-ai-cat-1756260612611-2-5"
+  },
+  {
+    "text": "¿Cuál es el intervalo en los reales del dominio de la función \\(k(x) = \\log_{\\frac{1}{5}}(3x + 21)\\)?",
+    "options": [
+      {
+        "text": "\\((-7, \\infty)\\)"
+      },
+      {
+        "text": "\\((-\\frac{7}{5}, \\infty)\\)"
+      },
+      {
+        "text": "\\((7, \\infty)\\)"
+      },
+      {
+        "text": "\\((-\\frac{1}{7}, \\infty)\\)"
+      }
+    ],
+    "correct": 0,
+    "explanation": "<ol><li>Para que una función logarítmica esté definida, el argumento del logaritmo debe ser mayor que cero.</li><li>En este caso, el argumento es \\(3x + 21\\). Por lo tanto, planteamos la inecuación: \\(3x + 21 > 0\\)</li><li>Restamos 21 a ambos lados: \\(3x > -21\\)</li><li>Dividimos por 3 a ambos lados: \\(x > -7\\)</li><li>El dominio de la función es el conjunto de todos los números reales \\(x\\) tales que \\(x > -7\\).</li><li>En notación de intervalo, esto se expresa como \\((-7, \\infty)\\).</li></ol>",
+    "sourceFileName": "image1.png",
+    "originalQuestionNumber": "25",
+    "internalId": "q-1756258265701-0.21809033899585017",
+    "id": "q-ai-cat-1756260612611-3-0"
+  },
+  {
+    "text": "¿Cuáles son los interceptos con el eje X e Y, respectivamente, de la función L(x) = \\( \\log_2(x + 4) \\)?",
+    "options": [
+      {
+        "text": "\\(-3\\) y \\(-2\\)"
+      },
+      {
+        "text": "\\(-3\\) y \\(2\\)"
+      },
+      {
+        "text": "\\(-2\\) y \\(3\\)"
+      },
+      {
+        "text": "\\(-3\\) y \\(4\\)"
+      }
+    ],
+    "correct": 1,
+    "explanation": "<ol><li>Para encontrar el intercepto con el eje X, establecemos \\(L(x) = 0\\):\\(\\log_2(x + 4) = 0\\)</li><li>Convertimos la ecuación logarítmica a exponencial: \\(x + 4 = 2^0\\)</li><li>Resolvemos para X: \\(x + 4 = 1 \\implies x = 1 - 4 \\implies x = -3\\)</li><li>Para encontrar el intercepto con el eje Y, establecemos \\(x = 0\\):\\(L(0) = \\log_2(0 + 4)\\)</li><li>Resolvemos para Y: \\(L(0) = \\log_2(4) \\implies L(0) = 2\\)</li><li>Los interceptos son \\(-3\\) (eje X) y \\(2\\) (eje Y), respectivamente.</li></ol>",
+    "sourceFileName": "image1.png",
+    "originalQuestionNumber": "23",
+    "internalId": "q-1756258265701-0.2913294748549",
+    "id": "q-ai-cat-1756260612611-3-1"
+  },
+  {
+    "text": "¿Cuáles son los interceptos con el eje X e Y, respectivamente, de la función \\(p(x) = \\log_{\\frac{1}{4}}(x + 16)\\)?",
+    "options": [
+      {
+        "text": "\\(-16\\) y \\(-2\\)"
+      },
+      {
+        "text": "\\(-15\\) y \\(2\\)"
+      },
+      {
+        "text": "\\(-8\\) y \\(-2\\)"
+      },
+      {
+        "text": "\\(-15\\) y \\(-2\\)"
+      }
+    ],
+    "correct": 3,
+    "explanation": "<ol><li>Para encontrar el intercepto con el eje X, establecemos \\(p(x) = 0\\):\\(\\log_{\\frac{1}{4}}(x + 16) = 0\\)</li><li>Convertimos la ecuación logarítmica a exponencial: \\(x + 16 = \\left(\\frac{1}{4}\\right)^0\\)</li><li>Resolvemos para X: \\(x + 16 = 1 \\implies x = 1 - 16 \\implies x = -15\\)</li><li>Para encontrar el intercepto con el eje Y, establecemos \\(x = 0\\):\\(p(0) = \\log_{\\frac{1}{4}}(0 + 16)\\)</li><li>Resolvemos para Y: \\(p(0) = \\log_{\\frac{1}{4}}(16)\\). Sea \\(y = \\log_{\\frac{1}{4}}(16)\\), entonces \\(\\left(\\frac{1}{4}\\right)^y = 16\\). \\( (4^{-1})^y = 4^2 \\implies 4^{-y} = 4^2 \\implies -y = 2 \\implies y = -2\\)</li><li>Los interceptos son \\(-15\\) (eje X) y \\(-2\\) (eje Y), respectivamente.</li></ol>",
+    "sourceFileName": "image1.png",
+    "originalQuestionNumber": "24",
+    "internalId": "q-1756258265701-0.7781430549652405",
+    "id": "q-ai-cat-1756260612611-3-2"
+  }
+];
+        const categories = [
+  {
+    "id": "ai-cat-1756260612611-0",
+    "title": "Conceptos Fundamentales de Funciones Algebraicas",
+    "description": "<p>Esta sección evalúa tu comprensión de las propiedades básicas de las funciones algebraicas y su representación gráfica. Es crucial recordar las definiciones de funciones crecientes y decrecientes, y cómo identificar diferentes tipos de funciones a partir de sus ecuaciones o gráficos.</p><p><strong>Conceptos clave incluyen:</strong></p><ul><li><strong>Evaluación de funciones:</strong> Sustituir un valor en la variable independiente para encontrar el valor de la función.</li><li><strong>Puntos de intersección:</strong> Los puntos donde la gráfica de una función corta los ejes coordenados (intersecciones con el eje X e Y).</li><li><strong>Funciones crecientes y decrecientes:</strong> Una función \\(f(x)\\) es creciente si \\(x_1 < x_2 \\Rightarrow f(x_1) < f(x_2)\\) y decreciente si \\(x_1 < x_2 \\Rightarrow f(x_1) > f(x_2)\\).</li><li><strong>Comparación de funciones:</strong> Determinar cuándo una función tiene valores mayores o menores que otra en un intervalo dado o en puntos específicos.</li></ul><p>Recuerda que una función cuadrática tiene la forma general \\(f(x) = ax^2 + bx + c\\) y su gráfica es una parábola. Una función lineal simple es \\(f(x) = mx\\).</p>",
+    "summaryKey": "ai-cat-1756260612611-0",
+    "problem_ids": [
+      "q-ai-cat-1756260612611-0-0",
+      "q-ai-cat-1756260612611-0-1",
+      "q-ai-cat-1756260612611-0-2",
+      "q-ai-cat-1756260612611-0-3",
+      "q-ai-cat-1756260612611-0-4",
+      "q-ai-cat-1756260612611-0-5",
+      "q-ai-cat-1756260612611-0-6",
+      "q-ai-cat-1756260612611-0-7"
+    ]
+  },
+  {
+    "id": "ai-cat-1756260612611-1",
+    "title": "Funciones Potencia: Propiedades, Análisis y Aplicaciones",
+    "description": "<p>Esta categoría profundiza en las <strong>funciones potencia</strong>, que tienen la forma general \\(f(x) = ax^n\\), donde \\(a\\) es una constante real y \\(n\\) es un entero. Comprender cómo los valores de \\(a\\) y \\(n\\) afectan el comportamiento de la función es fundamental.</p><strong>Fórmulas y Conceptos Clave:</strong><ul><li><strong>Forma general:</strong> \\(f(x) = ax^n\\)</li><li>Un <strong>punto fijo</strong> de una función \\(f\\) es un valor \\(x\\) tal que \\(f(x) = x\\).</li><li>Para determinar el comportamiento (creciente/decreciente) de \\(f(x) = bx^m\\), considera el signo de \\(b\\) y la paridad/imparidad de \\(m\\), especialmente para \\(x > 0\\).</li><li>Para encontrar los parámetros \\(a\\) y \\(n\\) de una función potencia, a menudo se necesitan dos puntos de la función, generando un sistema de ecuaciones. Por ejemplo, si \\(f(x) = ax^n\\), entonces \\(f(x_1) = ax_1^n\\) y \\(f(x_2) = ax_2^n\\).</li></ul><p>Las aplicaciones de las funciones potencia pueden modelar diversas situaciones, como el movimiento o el crecimiento.</p>",
+    "summaryKey": "ai-cat-1756260612611-1",
+    "problem_ids": [
+      "q-ai-cat-1756260612611-1-0",
+      "q-ai-cat-1756260612611-1-1",
+      "q-ai-cat-1756260612611-1-2",
+      "q-ai-cat-1756260612611-1-3",
+      "q-ai-cat-1756260612611-1-4",
+      "q-ai-cat-1756260612611-1-5",
+      "q-ai-cat-1756260612611-1-6",
+      "q-ai-cat-1756260612611-1-7"
+    ]
+  },
+  {
+    "id": "ai-cat-1756260612611-2",
+    "title": "Explorando las Funciones Exponenciales",
+    "description": "<p>Las <strong>funciones exponenciales</strong> son cruciales en matemáticas y tienen la forma general \\(f(x) = a^x\\) o transformaciones de esta. Se caracterizan por tener la variable independiente en el exponente.</p><strong>Propiedades Fundamentales:</strong><ul><li>Para que \\(f(x) = a^x\\) sea una función exponencial, la base \\(a\\) debe ser un número real positivo y \\(a \\neq 1\\).</li><li>El dominio de una función exponencial simple es \\(\\mathbb{R}\\).</li><li>El recorrido (rango) de \\(f(x) = a^x\\) es \\((0, \\infty)\\).</li><li>La gráfica de \\(f(x) = a^x\\) siempre interseca el eje Y en \\((0, 1)\\). No hay intersección con el eje X.</li><li>Si \\(a > 1\\), la función es <strong>creciente</strong>. Si \\(0 < a < 1\\), la función es <strong>decreciente</strong>.</li></ul><p>Las transformaciones como \\(f(x) = a^{x+c} + b\\) desplazan la gráfica horizontalmente (por \\(c\\)) y verticalmente (por \\(b\\)), afectando el recorrido y los interceptos.</p>\\[\\text{Intercepto Y: } f(0) = a^{0+c} + b = a^c + b\\]\\[\\text{Intercepto X (si existe): } a^{x+c} + b = 0 \\implies a^{x+c} = -b\\]",
+    "summaryKey": "ai-cat-1756260612611-2",
+    "problem_ids": [
+      "q-ai-cat-1756260612611-2-0",
+      "q-ai-cat-1756260612611-2-1",
+      "q-ai-cat-1756260612611-2-2",
+      "q-ai-cat-1756260612611-2-3",
+      "q-ai-cat-1756260612611-2-4",
+      "q-ai-cat-1756260612611-2-5"
+    ]
+  },
+  {
+    "id": "ai-cat-1756260612611-3",
+    "title": "Dominio e Interceptos de Funciones Logarítmicas",
+    "description": "<p>Las <strong>funciones logarítmicas</strong> son las inversas de las funciones exponenciales. La forma general es \\(f(x) = \\log_b(x)\\), donde \\(b\\) es la base. La relación inversa es crucial: si \\(y = \\log_b(x)\\), entonces \\(b^y = x\\).</p><strong>Aspectos Críticos:</strong><ul><li><strong>Dominio:</strong> El argumento del logaritmo debe ser siempre <strong>positivo</strong>. Para \\(f(x) = \\log_b(g(x))\\), el dominio se define por la condición \\(g(x) > 0\\).</li><li><strong>Base del logaritmo:</strong> La base \\(b\\) debe ser positiva y \\(b \\neq 1\\).</li><li><strong>Intercepto Y:</strong> Se encuentra calculando \\(f(0)\\). Sin embargo, muchas funciones logarítmicas no intersecan el eje Y si \\(x=0\\) no está en su dominio.</li><li><strong>Intercepto X:</strong> Se encuentra resolviendo \\(f(x) = 0\\), lo que implica \\(\\log_b(g(x)) = 0\\). Por la definición de logaritmo, esto significa que \\(g(x) = b^0 = 1\\).</li></ul><p>Recordar estas propiedades te ayudará a analizar y resolver problemas con funciones logarítmicas eficazmente.</p>",
+    "summaryKey": "ai-cat-1756260612611-3",
+    "problem_ids": [
+      "q-ai-cat-1756260612611-3-0",
+      "q-ai-cat-1756260612611-3-1",
+      "q-ai-cat-1756260612611-3-2"
+    ]
+  }
+];
+
+        const problemsById = {};
+        allProblemsData.forEach(p => { problemsById[p.id] = p; });
+        
+        let currentQuizProblems = [];
+        let currentCategory = null;
+        let completedCategories = JSON.parse(localStorage.getItem('completedQuizCategories')) || {};
+        let currentProblemIndex = 0;
+        let score = 0;
+        
+        const categorySelectionScreen = document.getElementById('category-selection-screen');
+        const categoryListEl = document.getElementById('category-list');
+        const overallProgressContainer = document.getElementById('overall-progress-container');
+        const overallScoreEl = document.getElementById('overall-score');
+        const showFinalResultsBtn = document.getElementById('show-final-results-btn');
+        const quizWrapperEl = document.getElementById('quiz-wrapper');
+        const summaryContainerEl = document.getElementById('summary-container');
+        const summaryContinueBtn = document.getElementById('summary-continue-btn');
+        const quizContainerEl = document.getElementById('quiz-container');
+        const headerEl = document.getElementById('problem-header');
+        const questionEl = document.getElementById('question-container');
+        const graphEl = document.getElementById('graph-container');
+        const optionsEl = document.getElementById('options-container');
+        const feedbackEl = document.getElementById('feedback-container');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreCounterEl = document.getElementById('score-counter');
+        const finalScreenEl = document.getElementById('final-screen');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+
+        function renderCategoryScreen() {
+            categoryListEl.innerHTML = '';
+            let totalCompleted = 0;
+            let totalPossibleScore = 0;
+            let totalUserScore = 0;
+
+            categories.forEach(cat => {
+                const li = document.createElement('li');
+                li.className = 'category-item';
+                li.dataset.categoryId = cat.id;
+                
+                const catProgress = completedCategories[cat.id];
+                let progressHTML = '';
+                if(catProgress) {
+                    li.classList.add('completed');
+                    if (catProgress.total > 0) {
+                        progressHTML = `<div class="progress-info">Completado: ${catProgress.score}/${catProgress.total}</div>`;
+                    }
+                    totalCompleted++;
+                    totalUserScore += catProgress.score;
+                    totalPossibleScore += cat.problem_ids.length;
+                }
+
+                li.innerHTML = `<h3>${cat.title}</h3><p>${cat.description.replace(/<[^>]*>?/gm, '').substring(0, 100)}...</p>${progressHTML}`;
+                li.onclick = () => {
+                    if (!li.classList.contains('completed')) {
+                        startCategory(cat.id);
+                    }
+                };
+                categoryListEl.appendChild(li);
+            });
+
+            if (Object.keys(completedCategories).length > 0) {
+                overallProgressContainer.classList.remove('hidden');
+                overallScoreEl.textContent = `Puntaje total: ${totalUserScore} de ${totalPossibleScore} correctas. Secciones completadas: ${totalCompleted} de ${categories.length}.`;
+            } else {
+                 overallProgressContainer.classList.add('hidden');
+            }
+
+            if (totalCompleted === categories.length && categories.length > 0) {
+                showFinalResultsBtn.classList.remove('hidden');
+            } else {
+                showFinalResultsBtn.classList.add('hidden');
+            }
+
+            quizWrapperEl.classList.add('hidden');
+            categorySelectionScreen.classList.remove('hidden');
+        }
+
+        function startCategory(categoryId) {
+            currentCategory = categories.find(c => c.id === categoryId);
+            if (!currentCategory) return;
+            
+            categorySelectionScreen.classList.add('hidden');
+            quizWrapperEl.classList.remove('hidden');
+
+            currentQuizProblems = currentCategory.problem_ids.map(id => problemsById[id]);
+            currentProblemIndex = 0;
+            score = 0;
+            
+            showSummary(currentCategory.id);
+        }
+
+        function showSummary(summaryKey) {
+            const summary = summaries[summaryKey];
+            if (!summary) {
+                 summaryContinueBtn.onclick(); return;
+            }
+            
+            const summaryTitleEl = document.getElementById('summary-title');
+            const keyConceptsEl = document.getElementById('summary-key-concepts');
+            const tipsListEl = document.getElementById('summary-tips-list');
+    
+            summaryTitleEl.textContent = `Preparación para: ${summary.title}`;
+            keyConceptsEl.innerHTML = summary.key_concepts_html;
+            
+            tipsListEl.innerHTML = '';
+            summary.tips.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                tipsListEl.appendChild(li);
+            });
+            
+            renderMath();
+            quizContainerEl.classList.add('hidden');
+            finalScreenEl.classList.add('hidden');
+            summaryContainerEl.classList.remove('hidden');
+        }
+
+        summaryContinueBtn.onclick = () => {
+            summaryContainerEl.classList.add('hidden');
+            if (currentQuizProblems && currentQuizProblems.length > 0) {
+                quizContainerEl.classList.remove('hidden');
+                renderProblem(currentProblemIndex);
+            } else {
+                endOfCategory();
+            }
+        };
+        
+        function renderProblem(index) {
+            optionsEl.innerHTML = '';
+            feedbackEl.style.display = 'none';
+            nextButton.classList.remove('visible');
+            graphEl.innerHTML = '';
+            optionsEl.className = '';
+
+            const problem = currentQuizProblems[index];
+            if (!problem) {
+                console.error("Could not find problem for index:", index, "in category:", currentCategory.title);
+                questionEl.innerHTML = "Error: No se pudo cargar la pregunta. Verifique que los datos sean correctos.";
+                return;
+            }
+
+            headerEl.textContent = `Pregunta ${index + 1} de ${currentQuizProblems.length}`;
+            questionEl.innerHTML = problem.text;
+            progressBar.style.width = `${((index) / currentQuizProblems.length) * 100}%`;
+            scoreCounterEl.textContent = `✅ Puntos: ${score}`;
+            
+            if (problem.diagram && problem.diagram.code) {
+                graphEl.style.display = 'block';
+                graphEl.innerHTML = problem.diagram.code;
+            } else {
+                graphEl.style.display = 'none';
+            }
+            
+            const optionsHaveDiagrams = problem.options.some(opt => opt.diagram && opt.diagram.code);
+
+            if (optionsHaveDiagrams) {
+                 optionsEl.className = 'options-grid-with-graphs';
+                 problem.options.forEach((opt, i) => createOptionBlock(opt, i));
+            } else {
+                 problem.options.forEach((opt, i) => createOptionButton(opt, i));
+            }
+            renderMath();
+        }
+        
+        function createOptionButton(option, index) {
+            const button = document.createElement('button');
+            button.className = 'option-button';
+            button.dataset.index = index;
+            button.innerHTML = `<span class="label">${String.fromCharCode(65 + index)})</span> <span class="value">${option.text || ''}</span>`;
+            button.onclick = handleOptionClick;
+            optionsEl.appendChild(button);
+        }
+        
+        function createOptionBlock(option, index) {
+            const optionBlock = document.createElement('div');
+            optionBlock.className = 'option-block-graph';
+            optionBlock.dataset.index = index;
+            optionBlock.onclick = handleOptionClick;
+            let diagramHTML = option.diagram ? `<div class="option-graph-canvas-container">${option.diagram.code}</div>` : '';
+            optionBlock.innerHTML = `<div class="label">${String.fromCharCode(65 + index)}) ${option.text || ''}</div> ${diagramHTML}`;
+            optionsEl.appendChild(optionBlock);
+        }
+
+        function handleOptionClick(event) {
+            const problem = currentQuizProblems[currentProblemIndex];
+            const selectedIndex = parseInt(event.currentTarget.dataset.index, 10);
+            const correctIndex = problem.correct;
+            
+            const correctButton = document.querySelector(`[data-index="${correctIndex}"]`);
+            if (correctButton) correctButton.classList.add('correct');
+            
+            let isAnswerCorrect = false;
+            const selectedButton = event.currentTarget;
+            if (selectedIndex === correctIndex) {
+                score++;
+                isAnswerCorrect = true;
+            } else {
+                selectedButton.classList.add('incorrect');
+            }
+            
+            scoreCounterEl.textContent = `✅ Puntos: ${score}`;
+            document.querySelectorAll('.option-button, .option-block-graph').forEach(btn => { btn.classList.add('disabled'); btn.onclick = null; });
+            progressBar.style.width = `${((currentProblemIndex + 1) / currentQuizProblems.length) * 100}%`;
+            
+            feedbackEl.className = isAnswerCorrect ? 'feedback-container correct' : 'feedback-container incorrect';
+            const feedbackTitle = isAnswerCorrect ? `<div id="feedback-title">${icons.check} Correcto</div>` : `<div id="feedback-title">${icons.x} Incorrecto</div>`;
+            feedbackEl.innerHTML = `${feedbackTitle}${problem.explanation}`;
+            
+            renderMath();
+            feedbackEl.style.display = 'block';
+            if (currentProblemIndex < currentQuizProblems.length - 1) { nextButton.textContent = 'Siguiente →'; } 
+            else { nextButton.textContent = 'Finalizar Sección'; }
+            nextButton.classList.add('visible');
+        }
+
+        nextButton.onclick = () => {
+            currentProblemIndex++;
+            if (currentProblemIndex < currentQuizProblems.length) {
+                renderProblem(currentProblemIndex);
+            } else {
+                endOfCategory();
+            }
+        };
+        
+        function endOfCategory() {
+            completedCategories[currentCategory.id] = {
+                score: score,
+                total: currentQuizProblems.length
+            };
+            localStorage.setItem('completedQuizCategories', JSON.stringify(completedCategories));
+            
+            quizContainerEl.classList.add('hidden');
+            finalScreenEl.classList.remove('hidden');
+
+            const percentage = currentQuizProblems.length > 0 ? Math.round((score / currentQuizProblems.length) * 100) : 100;
+            document.getElementById('final-title').textContent = `Sección Completada: ${currentCategory.title}`;
+            document.getElementById('final-message').textContent = currentQuizProblems.length > 0 ? `¡Gran trabajo! Has completado esta sección.` : `¡Concepto explorado! Ahora puedes continuar con la siguiente sección.`;
+            document.getElementById('final-score').textContent = currentQuizProblems.length > 0 ? `${score} / ${currentQuizProblems.length}` : '✔';
+            const finalPercentageEl = document.getElementById('final-percentage');
+            if (currentQuizProblems.length > 0) {
+                finalPercentageEl.textContent = `(${percentage}%)`;
+                finalPercentageEl.style.color = percentage >= 60 ? 'var(--success-color)' : 'var(--danger-color)';
+            } else {
+                finalPercentageEl.textContent = '';
+            }
+            backToMenuBtn.textContent = 'Volver al Menú';
+            backToMenuBtn.onclick = () => {
+                finalScreenEl.classList.add('hidden');
+                renderCategoryScreen();
+            };
+        }
+        
+        showFinalResultsBtn.onclick = () => {
+            categorySelectionScreen.classList.add('hidden');
+            quizWrapperEl.classList.remove('hidden');
+
+            summaryContainerEl.classList.add('hidden');
+            quizContainerEl.classList.add('hidden');
+            finalScreenEl.classList.remove('hidden');
+
+            let totalScore = 0;
+            let totalProblems = 0;
+            Object.values(completedCategories).forEach(cat => {
+                totalScore += cat.score;
+                if (cat.total > 0) {
+                    totalProblems += cat.total;
+                }
+            });
+
+            const percentage = totalProblems > 0 ? Math.round((totalScore / totalProblems) * 100) : 0;
+            document.getElementById('final-title').textContent = '¡Resumen Final del Desafío!';
+            document.getElementById('final-message').textContent = '¡Felicidades! Has completado todos los temas. Este es tu rendimiento general.';
+            document.getElementById('final-score').textContent = `${totalScore} / ${totalProblems}`;
+            const finalPercentageEl = document.getElementById('final-percentage');
+            finalPercentageEl.textContent = `(${percentage}%)`;
+            finalPercentageEl.style.color = percentage >= 60 ? 'var(--success-color)' : 'var(--danger-color)';
+            
+            backToMenuBtn.textContent = 'Reiniciar Desafío';
+            backToMenuBtn.onclick = () => {
+                localStorage.removeItem('completedQuizCategories');
+                window.location.reload();
+            };
+        };
+        
+        renderCategoryScreen();
+        renderMath();
+    });
+    </script>
+</body>
+</html>
+  
